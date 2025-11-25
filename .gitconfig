@@ -1,0 +1,41 @@
+[user]
+        email = chieuleheng@gmail.com
+        name = Chieu Le Heng
+
+[alias]
+  # Status / Add / Commit
+  s = status -sb
+  st = status
+  a = add
+  aa = add -A
+  c = commit
+  cm = commit -m
+  ca = commit -a
+  amend = commit --amend -m
+
+  # Branch / Checkout
+  b = branch
+  co = checkout
+  cob = checkout -b
+  sw = switch
+  swc = switch -c
+
+  # Diff / Log
+  d = diff
+  ds = diff --staged
+  l = log --oneline
+  lg = log --oneline --graph --decorate --all
+
+  # Remote / Push / Pull
+  f = fetch
+  fa = fetch --all --prune
+  p = pull
+  ps = push
+  psf = push --force-with-lease
+
+  # Rebase / Reset / Revert
+  r = rebase
+  ra = rebase --abort
+  rc = rebase --continue
+  rs = reset
+  rv = revert
