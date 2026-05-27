@@ -3,11 +3,14 @@
 # for examples
 
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+case $- in
+    *i*) ;;
+      *) return;;
+esac
 
-# don't put duplicate lines in the history. See bash(1) for more options
-# ... or force ignoredups and ignorespace
-HISTCONTROL=ignoredups:ignorespace
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
 
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -20,23 +23,27 @@ HISTFILESIZE=2000
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color) color_prompt=yes;;
+    xterm-color|*-256color) color_prompt=yes;;
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-#force_color_prompt=yes
+force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -50,7 +57,7 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u@\h\[\033[00m\]:\[\033[38;5;208m\]\w\[\033[00m\]\$ '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -77,6 +84,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
@@ -98,36 +108,22 @@ fi
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
-if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
+  fi
 fi
+export PATH=/usr/local/cuda-13.0/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-13.0/lib64:$LD_LIBRARY_PATH
 
-[[ -d MIS_solver ]] && cd ~/MIS_solver
-alias cat='function _cat(){ cat "$1"; echo; echo; echo; };_cat'
+# Densepose project
+DENSEPOSE=/mnt/windows/Users/densepose/Documents/densepose/rpi_wifi_stream
+export QT_QPA_PLATFORM_PLUGIN_PATH=/home/q1/rpi_venv/lib/python3.12/site-packages/PyQt5/Qt5/plugins/platforms
+alias densepose='cd $DENSEPOSE && source ~/rpi_venv/bin/activate'
+alias calibrate='cd $DENSEPOSE && source ~/rpi_venv/bin/activate && python calibration/main_5ghz.py'
+alias r='redshift -O'
 alias open='xdg-open'
-#alias less='vim -R' # consideration
-
-function run() {
-    #[[ -d mcts ]] || exit 1
-    #set -e
-	if ls *graphs.pickle 1> /dev/null 2>&1; then
-		echo 'Adding *graphs.pickle'
-		git add *graphs.pickle
-	fi	
-	git add *.py mcts/*.py utils/*.py 
-	git commit --allow-empty -m "Snapshot before running $*" && echo $'\n==================== Running ===================='
-	timestamp=`date +%Y-%m-%d_%H`
-    [[ -d ~/.run_log ]] || mkdir ~/.run_log
-	filename=~/.run_log/`echo "$*" | sed 's/ /_/g'`_$timestamp.txt
-	echo "Saving output to $filename"
-	python3 -u "$@" -c "file in $filename" 1> "$filename" 2>&1 &
-	alias track='less +F "$filename"'
-    wait
-	less +F $filename
-}
-
-# setup dotfiles repo
-alias config='/usr/bin/env git --git-dir=$HOME/.cfg/ --work-tree=$HOME "$@"'
-config config user.name "Le Heng Chieu"
-config config user.email "chieuleheng@gmail.com"
-#config push --set-upstream origin master
+cd $DENSEPOSE
+export PATH="$HOME/.local/bin:$PATH"
