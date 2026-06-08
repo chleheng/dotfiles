@@ -1,0 +1,22 @@
+[Desktop Entry]
+Version=1.0
+Terminal=false
+Type=Application
+Name=Outlook (PWA)
+MimeType=x-scheme-handler/mailto;x-scheme-handler/google-chrome;
+Exec=/opt/google/chrome/google-chrome --profile-directory=Default --app-id=eoficlgicibekocmfdomjbfnjmehnhcd %U
+Icon=chrome-eoficlgicibekocmfdomjbfnjmehnhcd-Default
+StartupWMClass=crx_eoficlgicibekocmfdomjbfnjmehnhcd
+Actions=New-event;New-message;Open-calendar
+
+[Desktop Action New-event]
+Name=New event
+Exec=/opt/google/chrome/google-chrome --profile-directory=Default --app-id=eoficlgicibekocmfdomjbfnjmehnhcd --app-launch-url-for-shortcuts-menu-item=https://outlook.cloud.microsoft/calendar/deeplink/compose
+
+[Desktop Action New-message]
+Name=New message
+Exec=/opt/google/chrome/google-chrome --profile-directory=Default --app-id=eoficlgicibekocmfdomjbfnjmehnhcd --app-launch-url-for-shortcuts-menu-item=https://outlook.cloud.microsoft/mail/deeplink/compose
+
+[Desktop Action Open-calendar]
+Name=Open calendar
+Exec=/opt/google/chrome/google-chrome --profile-directory=Default --app-id=eoficlgicibekocmfdomjbfnjmehnhcd --app-launch-url-for-shortcuts-menu-item=https://outlook.cloud.microsoft/calendar

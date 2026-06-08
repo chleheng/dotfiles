@@ -1,0 +1,4 @@
+name	app_id	profile	desktop_file	exec
+Outlook (PWA)	eoficlgicibekocmfdomjbfnjmehnhcd	Default	chrome-eoficlgicibekocmfdomjbfnjmehnhcd-Default.desktop	/opt/google/chrome/google-chrome --profile-directory=Default --app-id=eoficlgicibekocmfdomjbfnjmehnhcd %U
+WhatsApp Web	hnpfjngllnobngcgfapefoaidbinmjnm	Default	chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default.desktop	/opt/google/chrome/google-chrome --profile-directory=Default --app-id=hnpfjngllnobngcgfapefoaidbinmjnm
+Docs	mpnpojknpmmopombnjdcgaaiekajbnjb	Default	chrome-mpnpojknpmmopombnjdcgaaiekajbnjb-Default.desktop	/opt/google/chrome/google-chrome --profile-directory=Default --app-id=mpnpojknpmmopombnjdcgaaiekajbnjb

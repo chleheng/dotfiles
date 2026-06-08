@@ -115,15 +115,29 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-export PATH=/usr/local/cuda-13.0/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda-13.0/lib64:$LD_LIBRARY_PATH
+if [ -d /usr/local/cuda-13.0/bin ]; then
+  export PATH="/usr/local/cuda-13.0/bin:$PATH"
+fi
+if [ -d /usr/local/cuda-13.0/lib64 ]; then
+  export LD_LIBRARY_PATH="/usr/local/cuda-13.0/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+fi
 
 # Densepose project
 DENSEPOSE=/mnt/windows/Users/densepose/Documents/densepose/rpi_wifi_stream
 export QT_QPA_PLATFORM_PLUGIN_PATH=/home/q1/rpi_venv/lib/python3.12/site-packages/PyQt5/Qt5/plugins/platforms
-alias densepose='cd $DENSEPOSE && source ~/rpi_venv/bin/activate'
-alias calibrate='cd $DENSEPOSE && source ~/rpi_venv/bin/activate && python calibration/main_5ghz.py'
-alias r='redshift -O'
+alias rpi='cd "$DENSEPOSE" && source ~/venvs/rpi_wifi_stream/bin/activate'
+alias calibrate='cd "$DENSEPOSE" && source ~/venvs/rpi_wifi_stream/bin/activate && python calibration/main_5ghz.py'
+r() {
+  local temp="${1:-6500}"
+  local gtk_pids
+
+  pkill -x redshift 2>/dev/null
+  gtk_pids="$(pgrep -f '[r]edshift-gtk')" && kill $gtk_pids 2>/dev/null
+  redshift -P -O "$temp"
+}
 alias open='xdg-open'
-cd $DENSEPOSE
+if [ -d "$DENSEPOSE" ]; then
+  cd "$DENSEPOSE"
+fi
 export PATH="$HOME/.local/bin:$PATH"
+alias wi='cd "$DENSEPOSE" && bash ./local_client/watch_iperf.sh'

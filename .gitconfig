@@ -2,6 +2,28 @@
         email = chieuleheng@gmail.com
         name = Chieu Le Heng
 
+[color]
+  ui = auto
+
+[color "diff"]
+  meta = bold yellow
+  frag = bold white
+  old = bold red
+  new = bold green
+
+[color "status"]
+  added = bold green
+  changed = bold yellow
+  untracked = bold white
+
+[credential "https://github.com"]
+  helper =
+  helper = !gh auth git-credential
+
+[credential "https://gist.github.com"]
+  helper =
+  helper = !gh auth git-credential
+
 [alias]
   # Status / Add / Commit
   s = status -sb

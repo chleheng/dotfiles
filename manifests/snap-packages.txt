@@ -1,0 +1,13 @@
+bare
+core22
+core24
+firefox
+firmware-updater
+gnome-42-2204
+gnome-46-2404
+gtk-common-themes
+mesa-2404
+snap-store
+snapd
+snapd-desktop-integration
+telegram-desktop

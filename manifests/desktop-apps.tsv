@@ -1,0 +1,133 @@
+source	file	name	exec	categories
+user	chrome-eoficlgicibekocmfdomjbfnjmehnhcd-Default.desktop	Outlook (PWA)	/opt/google/chrome/google-chrome --profile-directory=Default --app-id=eoficlgicibekocmfdomjbfnjmehnhcd %U	-
+user	chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default.desktop	WhatsApp Web	/opt/google/chrome/google-chrome --profile-directory=Default --app-id=hnpfjngllnobngcgfapefoaidbinmjnm	-
+user	chrome-mpnpojknpmmopombnjdcgaaiekajbnjb-Default.desktop	Docs	/opt/google/chrome/google-chrome --profile-directory=Default --app-id=mpnpojknpmmopombnjdcgaaiekajbnjb	-
+user	claude-code-url-handler.desktop	Claude Code URL Handler	"/usr/local/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe" --handle-uri %u	-
+user	telegram-desktop_telegram-desktop.desktop	Telegram	env QT_SCALE_FACTOR=1.3 QT_IM_MODULE=fcitx GTK_IM_MODULE=fcitx XMODIFIERS=@im=fcitx /snap/bin/telegram-desktop -- %U	Chat;Network;InstantMessaging;Qt;
+system	apport-gtk.desktop	Report a problem...	/usr/share/apport/apport-gtk -c %f	GNOME;GTK;Utility;
+system	bluetooth-sendto.desktop	Bluetooth Transfer	bluetooth-sendto	GTK;GNOME;Utility;FileTools;
+system	code-url-handler.desktop	Visual Studio Code - URL Handler	/usr/share/code/code --open-url %U	Utility;TextEditor;Development;IDE;
+system	code.desktop	Visual Studio Code	/usr/share/code/code %F	TextEditor;Development;IDE;
+system	com.github.hluk.copyq.desktop	CopyQ	copyq --start-server show	Qt;KDE;Utility;
+system	com.google.Chrome.desktop	Google Chrome	/usr/bin/google-chrome-stable %U	Network;WebBrowser;
+system	com.obsproject.Studio.desktop	OBS Studio	obs	AudioVideo;Recorder;
+system	fcitx5-configtool.desktop	Fcitx 5 Configuration	/usr/bin/fcitx5-configtool	Settings;
+system	fcitx5-wayland-launcher.desktop	Fcitx 5 Wayland Launcher (Experimental)	/usr/libexec/fcitx5-wayland-launcher --reopen	System;Utility;
+system	gammastep-indicator.desktop	Gammastep Indicator	gammastep-indicator	Utility;
+system	gammastep.desktop	gammastep	gammastep	Utility;
+system	gcr-prompter.desktop	Access Prompt	/usr/libexec/gcr-prompter	-
+system	gcr-viewer.desktop	View file	/usr/bin/gcr-viewer	-
+system	geoclue-demo-agent.desktop	Geoclue Demo agent	/usr/libexec/geoclue-2.0/demos/agent	-
+system	gkbd-keyboard-display.desktop	Keyboard Layout	gkbd-keyboard-display	GNOME;GTK;Core;System;
+system	gnome-about-panel.desktop	About	gnome-control-center system about	GNOME;GTK;Settings;X-GNOME-Settings-Panel;X-GNOME-SystemSettings;
+system	gnome-applications-panel.desktop	Apps	gnome-control-center applications	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-AccountSettings;
+system	gnome-background-panel.desktop	Appearance	gnome-control-center background	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-PersonalizationSettings;
+system	gnome-bluetooth-panel.desktop	Bluetooth	gnome-control-center bluetooth	GTK;GNOME;Settings;X-GNOME-NetworkSettings;HardwareSettings;X-GNOME-Settings-Panel;X-GNOME-ConnectivitySettings;
+system	gnome-color-panel.desktop	Color	gnome-control-center color	GNOME;GTK;Settings;X-GNOME-Settings-Panel;HardwareSettings;X-GNOME-DevicesSettings;
+system	gnome-datetime-panel.desktop	Date & Time	gnome-control-center system datetime	GNOME;GTK;Settings;X-GNOME-Settings-Panel;X-GNOME-SystemSettings;
+system	gnome-disk-image-mounter.desktop	Disk Image Mounter	gnome-disk-image-mounter %U	-
+system	gnome-disk-image-writer.desktop	Disk Image Writer	gnome-disks --restore-disk-image %U	-
+system	gnome-display-panel.desktop	Displays	gnome-control-center display	GNOME;GTK;Settings;HardwareSettings;X-GNOME-Settings-Panel;X-GNOME-DevicesSettings;
+system	gnome-initial-setup.desktop	Initial Setup	/usr/libexec/gnome-initial-setup-wrapper /usr/libexec/gnome-initial-setup	GNOME;GTK;System;
+system	gnome-keyboard-panel.desktop	Keyboard	gnome-control-center keyboard	GNOME;GTK;Settings;HardwareSettings;X-GNOME-Settings-Panel;X-GNOME-DevicesSettings;
+system	gnome-language-selector.desktop	Language Support	/usr/bin/gnome-language-selector	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-Unity-Settings-Panel;X-GNOME-PersonalSettings
+system	gnome-mouse-panel.desktop	Mouse & Touchpad	gnome-control-center mouse	GNOME;GTK;Settings;HardwareSettings;X-GNOME-Settings-Panel;X-GNOME-DevicesSettings;
+system	gnome-multitasking-panel.desktop	Multitasking	gnome-control-center multitasking	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-PersonalizationSettings;
+system	gnome-network-panel.desktop	Network	gnome-control-center network	GNOME;GTK;Settings;HardwareSettings;X-GNOME-Settings-Panel;X-GNOME-ConnectivitySettings;
+system	gnome-notifications-panel.desktop	Notifications	gnome-control-center notifications	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-PersonalizationSettings;
+system	gnome-online-accounts-panel.desktop	Online Accounts	gnome-control-center online-accounts	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-AccountSettings;
+system	gnome-power-panel.desktop	Power	gnome-control-center power	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-DevicesSettings;
+system	gnome-printers-panel.desktop	Printers	gnome-control-center printers	GNOME;GTK;Settings;HardwareSettings;X-GNOME-Settings-Panel;X-GNOME-DevicesSettings;
+system	gnome-privacy-panel.desktop	Privacy & Security	gnome-control-center privacy	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-AccountSettings;
+system	gnome-region-panel.desktop	Region & Language	gnome-control-center system region	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-SystemSettings;
+system	gnome-search-panel.desktop	Search	gnome-control-center search	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-PersonalizationSettings;
+system	gnome-session-properties.desktop	Startup Applications	gnome-session-properties	GTK;GNOME;Settings;X-GNOME-PersonalSettings;
+system	gnome-sharing-panel.desktop	Sharing	gnome-control-center sharing	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-AccountSettings;
+system	gnome-sound-panel.desktop	Sound	gnome-control-center sound	GNOME;GTK;Settings;X-GNOME-Settings-Panel;X-GNOME-DevicesSettings;
+system	gnome-system-monitor-kde.desktop	GNOME System Monitor	gnome-system-monitor	GNOME;GTK;System;Monitor;
+system	gnome-system-panel.desktop	System	gnome-control-center system	GNOME;GTK;Settings;X-GNOME-Settings-Panel;X-GNOME-DetailsSettings;
+system	gnome-ubuntu-panel.desktop	Ubuntu Desktop	gnome-control-center ubuntu	GNOME;GTK;Settings;DesktopSettings;X-GNOME-Settings-Panel;X-GNOME-PersonalSettings;X-GNOME-PersonalizationSettings;
+system	gnome-universal-access-panel.desktop	Accessibility	gnome-control-center universal-access	GNOME;GTK;Settings;X-GNOME-Settings-Panel;X-GNOME-DetailsSettings;
+system	gnome-users-panel.desktop	Users	gnome-control-center system users	GNOME;GTK;Settings;X-GNOME-Settings-Panel;X-GNOME-SystemSettings;
+system	gnome-wacom-panel.desktop	Wacom Tablet	gnome-control-center wacom	GNOME;GTK;Settings;HardwareSettings;X-GNOME-Settings-Panel;X-GNOME-DevicesSettings;
+system	gnome-wifi-panel.desktop	Wi-Fi	gnome-control-center wifi	GNOME;GTK;Settings;HardwareSettings;X-GNOME-Settings-Panel;X-GNOME-ConnectivitySettings;
+system	gnome-wwan-panel.desktop	Mobile Network	gnome-control-center wwan	GNOME;GTK;Settings;X-GNOME-NetworkSettings;HardwareSettings;X-GNOME-Settings-Panel;X-GNOME-ConnectivitySettings;
+system	google-chrome.desktop	Google Chrome	/usr/bin/google-chrome-stable %U	Network;WebBrowser;
+system	hplj1020.desktop	Reactivate HP LaserJet 1018/1020 after reloading paper	/usr/share/foo2zjs/hplj10xx_gui.tcl	System;
+system	htop.desktop	Htop	htop	System;Monitor;ConsoleOnly;
+system	ibus-setup-table.desktop	IBus Table Setup	/usr/libexec/ibus-setup-table	-
+system	im-config.desktop	Input Method	im-config	Settings
+system	info.desktop	TeXInfo	info	Utility;Documentation;ConsoleOnly;
+system	io.snapcraft.SessionAgent.desktop	Snapd User Session Agent	/bin/false	-
+system	kbd-layout-viewer5.desktop	Keyboard layout viewer	kbd-layout-viewer5	Qt;KDE;Utility;
+system	nautilus-autorun-software.desktop	Run Software	nautilus-autorun-software %u	-
+system	nm-applet.desktop	NetworkManager Applet	nm-applet	-
+system	nm-connection-editor.desktop	Advanced Network Configuration	nm-connection-editor	GNOME;GTK;Settings;X-GNOME-NetworkSettings;X-GNOME-Utilities;
+system	nsight-compute-2025.3.1.desktop	NVIDIA Nsight Compute 2025.3.1	/opt/nvidia/nsight-compute/2025.3.1/host/linux-desktop-glibc_2_11_3-x64/ncu-ui	Development;Profiling;ParallelComputing
+system	nsight.desktop	Nsight Eclipse Edition	/usr/local/cuda-13.0/bin/nsight	Development;IDE;Debugger;ParallelComputing
+system	nsys-ui-2025.3.2.desktop	NVIDIA Nsight Systems 2025.3.2	/opt/nvidia/nsight-systems/2025.3.2/host-linux-x64/nsys-ui	Application;Development;
+system	nvidia-settings.desktop	NVIDIA X Server Settings	/usr/bin/nvidia-settings	System;Settings;
+system	nvvp.desktop	NVIDIA Visual Profiler	/usr/local/cuda-13.0/bin/nvvp	Development;Profiling;ParallelComputing
+system	openjdk-21-java.desktop	OpenJDK Java 21 Runtime	cautious-launcher %f /usr/bin/java -jar	-
+system	org.fcitx.Fcitx5.desktop	Fcitx 5	/usr/bin/fcitx5	System;Utility;
+system	org.fcitx.fcitx5-config-qt.desktop	Fcitx 5 Configuration	fcitx5-config-qt	Settings;
+system	org.fcitx.fcitx5-migrator.desktop	Fcitx 5 Migration Wizard	fcitx5-migrator	Settings;
+system	org.fcitx.fcitx5-qt5-gui-wrapper.desktop	Fcitx 5 Qt5 Gui Wrapper	/usr/libexec/fcitx5-qt5-gui-wrapper	Settings;
+system	org.fcitx.fcitx5-qt6-gui-wrapper.desktop	Fcitx 5 Qt6 Gui Wrapper	/usr/libexec/fcitx5-qt6-gui-wrapper	Settings;
+system	org.freedesktop.IBus.Panel.Emojier.desktop	Emoji Choice	ibus emoji	-
+system	org.freedesktop.IBus.Panel.Extension.Gtk3.desktop	Emoji Choice	/usr/libexec/ibus-extension-gtk3	-
+system	org.freedesktop.IBus.Panel.Wayland.Gtk3.desktop	IBus Wayland	/usr/libexec/ibus-ui-gtk3 --enable-wayland-im --exec-daemon --daemon-args "--xim --panel disable"	-
+system	org.freedesktop.IBus.Setup.desktop	IBus Preferences	ibus-setup	Settings;
+system	org.freedesktop.Xwayland.desktop	Xwayland	-	System;
+system	org.gnome.Calculator.desktop	Calculator	gnome-calculator	GNOME;GTK;Utility;Calculator;
+system	org.gnome.Characters.desktop	Characters	/usr/bin/gnome-characters	GNOME;GTK;Utility;X-GNOME-Utilities;
+system	org.gnome.DiskUtility.desktop	Disks	gnome-disks	GNOME;GTK;Utility;X-GNOME-Utilities;Settings;HardwareSettings;
+system	org.gnome.Evince-previewer.desktop	Print Preview	evince-previewer %U	GNOME;GTK;Office;Viewer;Graphics;2DGraphics;VectorGraphics;
+system	org.gnome.Evince.desktop	Document Viewer	evince %U	GNOME;GTK;Office;Viewer;Graphics;2DGraphics;VectorGraphics;
+system	org.gnome.Evolution-alarm-notify.desktop	Events and Tasks Reminders	/usr/libexec/evolution-data-server/evolution-alarm-notify	-
+system	org.gnome.Logs.desktop	Logs	gnome-logs	GTK;GNOME;System;Monitor;Utility;X-GNOME-Utilities;
+system	org.gnome.Nautilus.desktop	Files	nautilus --new-window %U	GNOME;GTK;Utility;Core;FileManager;
+system	org.gnome.OnlineAccounts.OAuth2.desktop	GNOME OAuth2 Handler	/usr/libexec/goa-oauth2-handler %u	-
+system	org.gnome.PowerStats.desktop	Power Statistics	gnome-power-statistics	GNOME;GTK;System;Monitor;
+system	org.gnome.RemoteDesktop.Handover.desktop	GNOME Remote Desktop Handover Daemon	/usr/libexec/gnome-remote-desktop-daemon --handover	-
+system	org.gnome.Settings.desktop	Settings	gnome-control-center	GNOME;GTK;Settings;
+system	org.gnome.Shell.Extensions.desktop	Extensions	false	-
+system	org.gnome.Shell.desktop	GNOME Shell	/usr/bin/gnome-shell	GNOME;GTK;Core;
+system	org.gnome.Snapshot.desktop	Camera	snapshot	AudioVideo;Video;Recorder;GNOME;GTK;
+system	org.gnome.SystemMonitor.desktop	System Monitor	gnome-system-monitor	GNOME;GTK;System;Monitor;
+system	org.gnome.Tecla.desktop	Tecla	tecla	GNOME;GTK;Core;System;
+system	org.gnome.Terminal.Preferences.desktop	Terminal Preferences	gnome-terminal --preferences	GNOME;GTK;System;TerminalEmulator;
+system	org.gnome.Terminal.desktop	Terminal	gnome-terminal	GNOME;GTK;System;TerminalEmulator;
+system	org.gnome.TextEditor.desktop	Text Editor	gnome-text-editor %U	GNOME;GTK;Utility;TextEditor;
+system	org.gnome.Zenity.desktop	Zenity	zenity	-
+system	org.gnome.baobab.desktop	Disk Usage Analyzer	baobab %U	GTK;GNOME;System;Filesystem;X-GNOME-Utilities;
+system	org.gnome.clocks.desktop	Clocks	gnome-clocks	GNOME;GTK;Utility;Clock;
+system	org.gnome.eog.desktop	Image Viewer	eog %U	GNOME;GTK;Graphics;2DGraphics;RasterGraphics;Viewer;
+system	org.gnome.evolution-data-server.OAuth2-handler.desktop	Evolution Data Server OAuth2 Handler	/usr/libexec/evolution-data-server/evolution-oauth2-handler %u	-
+system	org.gnome.font-viewer.desktop	Fonts	gnome-font-viewer %u	GTK;GNOME;Utility;X-GNOME-Utilities;
+system	org.gnome.seahorse.Application.desktop	Passwords and Keys	seahorse %u	GNOME;GTK;Security;Utility;DesktopSettings;X-XFCE-SettingsDialog;
+system	org.gnome.tweaks.desktop	Tweaks	gnome-tweaks	GNOME;GTK;Settings;
+system	org.raspberrypi.rpi-imager.desktop	Imager	rpi-imager %F	Utility
+system	pulse.desktop	PulseUI	/opt/pulsesecure/bin/pulseUI	Utility;Application;
+system	python3.12.desktop	Python (v3.12)	/usr/bin/python3.12	Development;
+system	redshift-gtk.desktop	Redshift	redshift-gtk	Utility;
+system	redshift.desktop	Redshift	redshift	Utility;
+system	rygel.desktop	Rygel	rygel	-
+system	snap-handle-link.desktop	Handler for snap:// URIs	/usr/bin/snap handle-link %U	-
+system	software-properties-drivers.desktop	Additional Drivers	/usr/bin/software-properties-gtk --open-tab=4	X-XFCE;GTK;Settings;HardwareSettings
+system	software-properties-gtk.desktop	Software & Updates	software-properties-gtk	GNOME;GTK;Settings;X-GNOME-SystemSettings;X-GNOME-Settings-Panel;X-Unity-Settings-Panel;
+system	software-properties-livepatch.desktop	Livepatch	/usr/bin/software-properties-gtk --open-tab=6	GTK;Settings;HardwareSettings
+system	update-manager.desktop	Software Updater	/usr/bin/update-manager	System;Settings;
+system	vim.desktop	Vim	vim %F	Utility;TextEditor;
+system	vlc.desktop	VLC media player	/usr/bin/vlc --started-from-file %U	AudioVideo;Player;Recorder;
+system	xdg-desktop-portal-gnome.desktop	Portal	/usr/libexec/xdg-desktop-portal-gnome	-
+system	xdg-desktop-portal-gtk.desktop	Portal	/usr/libexec/xdg-desktop-portal-gtk	-
+system	yelp.desktop	Help	yelp %u	GNOME;GTK;Core;Documentation;Utility;
+snap	firefox_firefox.desktop	Firefox	/snap/bin/firefox %u	GNOME;GTK;Network;WebBrowser;
+snap	firmware-updater_firmware-updater-app.desktop	Firmware Updater	/usr/bin/false	System;
+snap	firmware-updater_firmware-updater.desktop	Firmware Updater	/snap/bin/firmware-updater	System;
+snap	snap-store_packagekit-session-installer.desktop	App Center	/usr/bin/false	System;Utility;PackageManager;SoftwareManagement;Network;Settings;
+snap	snap-store_show-updates.desktop	App Center Updates	/snap/bin/snap-store.show-updates --updates %U	System;Utility;PackageManager;SoftwareManagement;Network;Settings;
+snap	snap-store_snap-store.desktop	App Center	/snap/bin/snap-store %U	System;Utility;PackageManager;SoftwareManagement;Network;Settings;
+snap	snapd-desktop-integration_snapd-desktop-integration.desktop	App Updates	/usr/bin/false	-
+snap	telegram-desktop_telegram-desktop.desktop	Telegram	/snap/bin/telegram-desktop -- %U	Chat;Network;InstantMessaging;Qt;

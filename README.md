@@ -1,13 +1,89 @@
-other todos esp for desktop OS (in no order):
+# dotfiles
 
-install vscode, turn on dangerously allow permissions and default session future start.
-use vscode to allow sudo
+Personal setup notes, dotfiles, and machine snapshots for quickly rebuilding an Ubuntu desktop, especially a dual-boot Ubuntu system.
 
+Current primary snapshot: Ubuntu 24.04.4 LTS on GNOME, ThinkPad P16 Gen 2, kernel 6.17 HWE, NVIDIA/CUDA setup, Singapore location settings.
+
+## Quick start on a new Ubuntu machine
+
+```bash
+git clone https://github.com/chleheng/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+./scripts/bootstrap-ubuntu.sh
 ```
-install chrome and set as default. Open WhatsApp Web, discord log in pages in chrome.
-install chinese fcitx5-rime with 全拼 or similar good IME (use 全拼 the most common qwerty layout, i don't want to learn another layout). Change language change shortcut to Windows/Meta+space instead of Ctrl+space, just like Windows
-tweak copyq to be **completely** like windows's clipboard history - keyboard shortcuts and pinning and all. Take your time.
-install snap version of telegram, wrap in shortcut or something so that font is 1.2x larger than normal
-copy vimrc, bashrc etc from github.com/chleheng/dotfiles
-what other settings do you rmb that we have tweaked? Charging to max 80% behaviour if set in Lenovo Vantage/ASUS FA507 should copy over from windows dual boot right?
+
+Useful variants:
+
+```bash
+./scripts/bootstrap-ubuntu.sh --dry-run
+./scripts/bootstrap-ubuntu.sh --hardware
+./scripts/bootstrap-ubuntu.sh --all-apt-manual
+./scripts/bootstrap-ubuntu.sh --skip-packages
 ```
+
+The bootstrap script backs up existing files into `~/.dotfiles-backup/<timestamp>` before overwriting them.
+
+## What gets restored
+
+- Shell/editor dotfiles: `.bashrc`, `.profile`, `.xinputrc`, `.gitconfig`, `.vimrc`, `.tmux.conf`.
+- Safe app configs: Redshift, Gammastep, CopyQ settings, Fcitx5 profile, VS Code user settings, selected autostart entries.
+- App installs: curated apt packages, Telegram snap, VS Code extensions, npm globals.
+- Desktop tweaks: selected GNOME settings from `manifests/gnome-settings-apply.txt`.
+- Chrome web app launchers: Outlook PWA, WhatsApp Web, and Docs launchers from `config/chrome-web-apps/`.
+
+## Snapshot this machine again
+
+After changing system packages, apps, desktop settings, shell config, Redshift/Gammastep, Fcitx, CopyQ, VS Code, or Chrome web apps:
+
+```bash
+cd ~/dotfiles
+./scripts/snapshot-ubuntu.sh
+git status
+```
+
+Review the diff before committing. The snapshot intentionally skips browser profile databases, secrets, SSH keys, clipboard history, CopyQ item data, locks, caches, and downloaded binaries.
+
+## Important manifests
+
+- `manifests/apt-core.txt`: curated daily Ubuntu packages used by default.
+- `manifests/apt-manual.txt`: all packages marked manually installed on the current machine.
+- `manifests/apt-installed.tsv`: full dpkg installed package inventory.
+- `manifests/snap-apps.txt`: curated snap apps used by default.
+- `manifests/snap-packages.txt`: full current snap list names, including base snaps.
+- `manifests/desktop-apps.tsv`: visible desktop launchers from user, system, and snap locations.
+- `manifests/chrome-web-apps.tsv`: Chrome app-ID launchers found in `~/.local/share/applications`.
+- `manifests/chrome-installed-web-app-urls.tsv`: Chrome-installed app URLs detected from the Chrome profile preferences.
+- `manifests/vscode-extensions.txt`: VS Code extensions.
+- `manifests/gnome-settings-selected.txt`: broad selected GNOME snapshot.
+- `manifests/gnome-settings-apply.txt`: focused GNOME settings replayed by bootstrap.
+
+## Redshift and warm display setup
+
+Redshift is deliberately treated as a manual/one-shot tool:
+
+- `config/redshift/redshift.conf`: day `1700K`, night `1000K`, manual Singapore coordinates, `randr`.
+- `config/gammastep/config.ini`: day `1800K`, night `1100K`, manual Singapore coordinates, `wayland`.
+- `config/autostart/redshift-gtk.desktop` and `config/autostart/gammastep-indicator.desktop` are disabled/hidden.
+- `.bashrc` defines `r()`, so `r 3000` stops running Redshift controllers, resets gamma ramps, and applies `3000K`; plain `r` resets to `6500K`.
+
+This avoids the failure mode where `redshift-gtk` immediately overwrites a one-shot `redshift -O 3000`.
+
+## Nuances for future rebuilds
+
+- Chrome PWAs are awkward: `.desktop` launchers can be restored, but the underlying Chrome app IDs may depend on Chrome sync/profile state. If a launcher does nothing on a new machine, recreate the app from Chrome using the URLs in `manifests/chrome-installed-web-app-urls.tsv`.
+- NVIDIA/CUDA packages are hardware and kernel sensitive. Use `--hardware` only on a compatible NVIDIA machine, and be ready to follow current NVIDIA/CUDA repository instructions.
+- VS Code settings include intentionally permissive AI coding settings, including Claude Code bypass permissions and terminal auto-approval. Keep them only on a trusted machine.
+- CopyQ config is backed up, but clipboard history is not. That is deliberate.
+- Fcitx5/Rime uses `.xinputrc` plus `config/fcitx5/profile`; log out/in after restoring input method settings.
+- `.bashrc` contains project-specific Densepose paths under `/mnt/windows/Users/densepose/...`; edit those paths on a non-dual-boot or differently named machine.
+- `pulsesecure` and some VPN/vendor packages may appear in the full apt manifest but are not part of the curated default install because vendor repositories change.
+- Battery charge limits often live in firmware or Windows vendor tools on dual boot machines. This repo records Ubuntu-side power settings, not firmware/Windows charge thresholds.
+
+## Adapting to macOS or Windows
+
+Future automation should treat this repo as a model, not an Ubuntu-only spellbook:
+
+- Map `manifests/apt-core.txt` to Homebrew, Winget, Chocolatey, or Scoop equivalents.
+- Map GNOME settings to macOS System Settings, Windows Settings, PowerToys, or vendor utilities.
+- Preserve intent where implementation differs: warm display control, Meta/Super+Space input switching, CopyQ-like clipboard history, VS Code/AI tooling, Git colors readable under warm color temperatures, Chrome web apps, and project aliases.
+- Keep machine-specific hardware drivers, CUDA, VPN, and dual-boot paths in optional sections.

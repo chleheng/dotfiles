@@ -1,0 +1,3 @@
+# Curated snap apps. snap-packages.txt records the complete current snap set,
+# including base/runtime snaps that are normally installed automatically.
+telegram-desktop

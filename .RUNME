@@ -1,22 +1,14 @@
-type config >/dev/null 2>&1
-if [[ $? || -d .config-backup ]]
-then
-	>&2 echo Warning: config already defined
-    read -p "Continue? [y/n] " choice
-    [[ "$choice" =~ [nN] ]] && echo exiting now && exit 0
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+repo_url="${DOTFILES_REPO:-https://github.com/chleheng/dotfiles.git}"
+target="${DOTFILES_DIR:-$HOME/dotfiles}"
+
+if [ ! -d "$target/.git" ]; then
+  git clone "$repo_url" "$target"
+else
+  git -C "$target" pull --ff-only
 fi
 
-git clone --bare https://github.com/c-j-lh/dotfiles.git $HOME/.cfg
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-
-mkdir -p .config-backup
-config checkout
-if [ $? = 0 ]; then
-  echo "Checked out config.";
-  else
-    echo "Backing up pre-existing dot files.";
-    config checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
-fi;
-config checkout
-config config status.showUntrackedFiles no
-
+cd "$target"
+exec ./scripts/bootstrap-ubuntu.sh "$@"

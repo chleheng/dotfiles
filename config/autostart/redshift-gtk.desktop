@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Redshift
+Exec=redshift-gtk
+X-GNOME-Autostart-enabled=false
+Hidden=true

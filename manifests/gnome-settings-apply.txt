@@ -1,0 +1,30 @@
+# Focused GNOME settings worth replaying on a new Ubuntu desktop.
+# Format: schema key value
+org.gnome.desktop.interface clock-format '24h'
+org.gnome.desktop.interface clock-show-date true
+org.gnome.desktop.interface enable-hot-corners false
+org.gnome.desktop.interface font-name 'Ubuntu Sans 11'
+org.gnome.desktop.interface monospace-font-name 'Ubuntu Sans Mono 13'
+org.gnome.desktop.interface show-battery-percentage true
+org.gnome.desktop.interface text-scaling-factor 1.1699999999999999
+org.gnome.desktop.input-sources sources [('xkb', 'us')]
+org.gnome.desktop.peripherals.mouse natural-scroll false
+org.gnome.desktop.peripherals.touchpad natural-scroll true
+org.gnome.desktop.peripherals.touchpad tap-to-click true
+org.gnome.desktop.wm.keybindings switch-input-source ['<Super>space', 'XF86Keyboard']
+org.gnome.desktop.wm.keybindings switch-input-source-backward ['<Shift><Super>space', '<Shift>XF86Keyboard']
+org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+org.gnome.mutter edge-tiling false
+org.gnome.settings-daemon.plugins.color night-light-enabled false
+org.gnome.settings-daemon.plugins.color night-light-schedule-automatic false
+org.gnome.settings-daemon.plugins.color night-light-temperature uint32 1700
+org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 3600
+org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 6000
+org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'suspend'
+org.gnome.shell enabled-extensions ['ding@rastersoft.com', 'ubuntu-dock@ubuntu.com', 'tiling-assistant@ubuntu.com']
+org.gnome.shell favorite-apps ['google-chrome.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'code.desktop', 'org.gnome.TextEditor.desktop', 'com.obsproject.Studio.desktop']
+org.gnome.shell.extensions.dash-to-dock click-action 'focus-or-appspread'
+org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 48
+org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
+org.gnome.shell.extensions.dash-to-dock scroll-action 'switch-workspace'

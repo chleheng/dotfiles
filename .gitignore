@@ -1,0 +1,24 @@
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Runtime state and caches should never be committed.
+__pycache__/
+.cache/
+*.lock
+*.sqlite
+*.sqlite3
+*.db
+
+# Browser profiles and credentials are intentionally out of scope.
+config/google-chrome/
+config/chromium/
+config/BraveSoftware/
+
+# CopyQ settings are tracked, clipboard contents are not.
+config/copyq/*.dat
+config/copyq/*.lock
+config/copyq/*.pub
+config/copyq/*geometry*
+config/copyq/*no_session*

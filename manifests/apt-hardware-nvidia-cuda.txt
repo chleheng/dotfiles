@@ -1,0 +1,5 @@
+# Hardware-specific packages from the current ThinkPad P16 Gen 2 setup.
+# Use scripts/bootstrap-ubuntu.sh --hardware only on a compatible NVIDIA/CUDA machine.
+cuda-keyring
+cuda-toolkit-13-0
+nvidia-driver-595-open
