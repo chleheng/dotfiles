@@ -21,6 +21,7 @@ htop
 ibus-table-cangjie3
 ibus-table-cangjie5
 iperf3
+libinput-tools
 net-tools
 nmap
 npm
@@ -38,3 +39,4 @@ sshpass
 ubuntu-restricted-addons
 vim
 xdotool
+xinput

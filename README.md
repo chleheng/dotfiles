@@ -27,6 +27,7 @@ The bootstrap script backs up existing files into `~/.dotfiles-backup/<timestamp
 
 - Shell/editor dotfiles: `.bashrc`, `.profile`, `.xinputrc`, `.gitconfig`, `.vimrc`, `.tmux.conf`.
 - Safe app configs: Redshift, Gammastep, CopyQ settings, Fcitx5 profile, VS Code user settings, selected autostart entries.
+- Screen zoom helper: touchpad-to-GNOME-magnifier script plus user systemd service.
 - App installs: curated apt packages, Telegram snap, VS Code extensions, npm globals.
 - Desktop tweaks: selected GNOME settings from `manifests/gnome-settings-apply.txt`.
 - Chrome web app launchers: Outlook PWA, WhatsApp Web, and Docs launchers from `config/chrome-web-apps/`.
@@ -67,6 +68,17 @@ Redshift is deliberately treated as a manual/one-shot tool:
 - `.bashrc` defines `r()`, so `r 3000` stops running Redshift controllers, resets gamma ramps, and applies `3000K`; plain `r` resets to `6500K`.
 
 This avoids the failure mode where `redshift-gtk` immediately overwrites a one-shot `redshift -O 3000`.
+
+## Screen zoom setup
+
+`bin/touchpad-screen-zoom` maps `Super` + touchpad two-finger scroll to GNOME's screen magnifier, so zooming targets the whole display rather than a browser page.
+
+- Hold `Super` and two-finger scroll up/down: screen magnifier zoom in/out.
+- `Alt+Super+8`: toggle magnifier.
+- `Alt+Super+=` and `Alt+Super+-`: keyboard zoom fallback.
+- Emergency escape: `gsettings set org.gnome.desktop.a11y.applications screen-magnifier-enabled false`.
+
+See `docs/touchpad-screen-zoom.md` for service commands, tuning knobs, and notes about the X11 touchpad limitations found on this machine.
 
 ## Nuances for future rebuilds
 

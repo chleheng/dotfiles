@@ -13,6 +13,7 @@ mkdir -p \
   "$repo_root/config/fcitx5/conf" \
   "$repo_root/config/gammastep" \
   "$repo_root/config/redshift" \
+  "$repo_root/config/systemd/user" \
   "$repo_root/bin"
 
 copy_file() {
@@ -140,6 +141,8 @@ fi
 {
   for schema in \
     org.gnome.desktop.interface \
+    org.gnome.desktop.a11y.applications \
+    org.gnome.desktop.a11y.magnifier \
     org.gnome.desktop.input-sources \
     org.gnome.desktop.peripherals.mouse \
     org.gnome.desktop.peripherals.touchpad \
@@ -178,6 +181,7 @@ copy_file "$HOME/.config/fcitx5/conf/notifications.conf" "config/fcitx5/conf/not
 
 copy_file "$HOME/.config/Code/User/settings.json" "config/Code/User/settings.json"
 copy_file "$HOME/.config/Code/User/keybindings.json" "config/Code/User/keybindings.json"
+copy_file "$HOME/.config/systemd/user/touchpad-screen-zoom.service" "config/systemd/user/touchpad-screen-zoom.service"
 
 find "$HOME/.local/share/applications" -maxdepth 1 -type f -name 'chrome-*-Default.desktop' 2>/dev/null \
   | while IFS= read -r file; do
@@ -186,6 +190,7 @@ find "$HOME/.local/share/applications" -maxdepth 1 -type f -name 'chrome-*-Defau
 
 copy_executable "$HOME/bin/claude-backup" "bin/claude-backup"
 copy_executable "$HOME/.local/bin/claude-done-notify.sh" "bin/claude-done-notify.sh"
+copy_executable "$HOME/.local/bin/touchpad-screen-zoom" "bin/touchpad-screen-zoom"
 
 if command -v perl >/dev/null 2>&1; then
   find "$repo_root" -path "$repo_root/.git" -prune -o -type f \( \
@@ -196,6 +201,7 @@ if command -v perl >/dev/null 2>&1; then
     -name '*.ini' -o \
     -name '*.json' -o \
     -name '*.desktop' -o \
+    -name '*.service' -o \
     -name '*.sh' -o \
     -name '.bashrc' -o \
     -name '.profile' -o \

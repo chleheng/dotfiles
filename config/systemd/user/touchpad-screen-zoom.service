@@ -1,0 +1,13 @@
+[Unit]
+Description=Map touchpad scroll gestures to GNOME screen magnifier zoom
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/touchpad-screen-zoom --xinput-scroll
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target

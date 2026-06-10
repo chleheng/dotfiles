@@ -187,6 +187,22 @@ install_npm_globals() {
   done < "$list_file"
 }
 
+enable_user_service() {
+  local service="$1"
+
+  command -v systemctl >/dev/null 2>&1 || return 0
+  [ -f "$HOME/.config/systemd/user/$service" ] || return 0
+  systemctl --user show-environment >/dev/null 2>&1 || return 0
+
+  run systemctl --user daemon-reload || true
+  run systemctl --user import-environment DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR || true
+  run systemctl --user enable "$service" || true
+
+  if [ -n "${DISPLAY:-}" ]; then
+    run systemctl --user restart "$service" || true
+  fi
+}
+
 install_configs() {
   install_file "$repo_root/.bashrc" "$HOME/.bashrc"
   install_file "$repo_root/.profile" "$HOME/.profile"
@@ -210,6 +226,7 @@ install_configs() {
 
   install_file "$repo_root/config/Code/User/settings.json" "$HOME/.config/Code/User/settings.json"
   install_file "$repo_root/config/Code/User/keybindings.json" "$HOME/.config/Code/User/keybindings.json"
+  install_file "$repo_root/config/systemd/user/touchpad-screen-zoom.service" "$HOME/.config/systemd/user/touchpad-screen-zoom.service"
 
   find "$repo_root/config/chrome-web-apps" -maxdepth 1 -type f -name '*.desktop' 2>/dev/null \
     | while IFS= read -r file; do
@@ -218,6 +235,8 @@ install_configs() {
 
   install_file "$repo_root/bin/claude-backup" "$HOME/bin/claude-backup" 0755
   install_file "$repo_root/bin/claude-done-notify.sh" "$HOME/.local/bin/claude-done-notify.sh" 0755
+  install_file "$repo_root/bin/touchpad-screen-zoom" "$HOME/.local/bin/touchpad-screen-zoom" 0755
+  enable_user_service touchpad-screen-zoom.service
 
   if command -v im-config >/dev/null 2>&1; then
     run im-config -n fcitx5 || true

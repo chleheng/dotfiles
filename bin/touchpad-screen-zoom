@@ -1,0 +1,416 @@
+#!/usr/bin/env python3
+import os
+import re
+import math
+import pwd
+import struct
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+THRESHOLD = float(os.environ.get("TOUCHPAD_ZOOM_THRESHOLD", "1.12"))
+COOLDOWN = float(os.environ.get("TOUCHPAD_ZOOM_COOLDOWN", "0.12"))
+DEVICE_HINT = os.environ.get("TOUCHPAD_ZOOM_DEVICE", "ELAN0685:00 04F3:320B Touchpad")
+KEYBOARD_HINT = os.environ.get("TOUCHPAD_ZOOM_KEYBOARD", "AT Translated Set 2 keyboard")
+EVENT_DEVICE = os.environ.get("TOUCHPAD_ZOOM_EVENT", "/dev/input/event5")
+MODIFIER_MASK = int(os.environ.get("TOUCHPAD_ZOOM_MODIFIER_MASK", "0x40"), 0)
+SUPER_KEYCODES = [
+    int(code)
+    for code in os.environ.get("TOUCHPAD_ZOOM_SUPER_KEYCODES", "133,134,206,207").split(",")
+    if code.strip()
+]
+LOG_PATH = Path.home() / ".cache" / "touchpad-screen-zoom.log"
+
+EV_SYN = 0
+EV_ABS = 3
+SYN_REPORT = 0
+ABS_MT_SLOT = 0x2F
+ABS_MT_POSITION_X = 0x35
+ABS_MT_POSITION_Y = 0x36
+ABS_MT_TRACKING_ID = 0x39
+ABS_X = 0
+ABS_Y = 1
+INPUT_EVENT = struct.Struct("llHHi")
+
+
+def log(message):
+    LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with LOG_PATH.open("a", encoding="utf-8") as fh:
+        fh.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {message}\n")
+
+
+def output(command):
+    return subprocess.check_output(command, text=True, stderr=subprocess.DEVNULL).strip()
+
+
+def desktop_user():
+    if os.geteuid() != 0:
+        return None
+    user = os.environ.get("TOUCHPAD_ZOOM_USER") or os.environ.get("SUDO_USER")
+    if not user or user == "root":
+        return None
+    return user
+
+
+def desktop_environment(user):
+    try:
+        info = pwd.getpwnam(user)
+    except KeyError:
+        return []
+
+    uid = info.pw_uid
+    xauthority = os.environ.get("XAUTHORITY")
+    if not xauthority:
+        gdm_xauthority = f"/run/user/{uid}/gdm/Xauthority"
+        xauthority = gdm_xauthority if Path(gdm_xauthority).exists() else f"{info.pw_dir}/.Xauthority"
+
+    return [
+        f"HOME={info.pw_dir}",
+        f"USER={user}",
+        f"LOGNAME={user}",
+        f"DISPLAY={os.environ.get('DISPLAY', ':1')}",
+        f"XAUTHORITY={xauthority}",
+        f"XDG_RUNTIME_DIR={os.environ.get('XDG_RUNTIME_DIR', f'/run/user/{uid}')}",
+        f"DBUS_SESSION_BUS_ADDRESS={os.environ.get('DBUS_SESSION_BUS_ADDRESS', f'unix:path=/run/user/{uid}/bus')}",
+    ]
+
+
+def desktop_command(command):
+    user = desktop_user()
+    if not user:
+        return command
+    return ["sudo", "-n", "-u", user, "env", *desktop_environment(user), *command]
+
+
+def run(command):
+    subprocess.run(desktop_command(command), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+
+
+def desktop_output(command):
+    try:
+        return subprocess.check_output(desktop_command(command), text=True, stderr=subprocess.DEVNULL).strip()
+    except subprocess.CalledProcessError:
+        return ""
+
+
+def resolve_touchpad():
+    try:
+        device_id = output(["xinput", "list", "--id-only", DEVICE_HINT])
+        if device_id:
+            return device_id.splitlines()[0].strip()
+    except subprocess.CalledProcessError:
+        pass
+
+    listing = output(["xinput", "list"])
+    for line in listing.splitlines():
+        if "Touchpad" not in line:
+            continue
+        match = re.search(r"\bid=(\d+)\b", line)
+        if match:
+            return match.group(1)
+    raise RuntimeError("No XInput touchpad device found")
+
+
+def zoom(direction):
+    enabled = desktop_output(["gsettings", "get", "org.gnome.desktop.a11y.applications", "screen-magnifier-enabled"])
+
+    if direction == "in" and enabled != "true":
+        run(["gsettings", "set", "org.gnome.desktop.a11y.magnifier", "mag-factor", "2.0"])
+        run(["gsettings", "set", "org.gnome.desktop.a11y.applications", "screen-magnifier-enabled", "true"])
+        return
+
+    if direction == "out" and enabled != "true":
+        return
+
+    key = "Alt_L+Super_L+equal" if direction == "in" else "Alt_L+Super_L+minus"
+    run(["xdotool", "key", key])
+
+
+def watch_device(device_id):
+    process = subprocess.Popen(
+        ["stdbuf", "-oL", "xinput", "test-xi2", "--root", device_id],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+    )
+
+    baseline = 1.0
+    waiting_for_scale = False
+    last_trigger = 0.0
+
+    assert process.stdout is not None
+    for raw_line in process.stdout:
+        line = raw_line.strip()
+
+        if "GesturePinchBegin" in line:
+            baseline = 1.0
+            waiting_for_scale = False
+            continue
+
+        if "GesturePinchEnd" in line:
+            baseline = 1.0
+            waiting_for_scale = False
+            continue
+
+        if "GesturePinchUpdate" in line:
+            waiting_for_scale = True
+            continue
+
+        if not waiting_for_scale or not line.startswith("scale:"):
+            continue
+
+        waiting_for_scale = False
+        try:
+            scale = float(line.split(":", 1)[1].strip())
+        except ValueError:
+            continue
+
+        now = time.monotonic()
+        if now - last_trigger < COOLDOWN:
+            continue
+
+        ratio = scale / baseline if baseline else scale
+        if ratio >= THRESHOLD:
+            zoom("in")
+            baseline = scale
+            last_trigger = now
+        elif ratio <= 1.0 / THRESHOLD:
+            zoom("out")
+            baseline = scale
+            last_trigger = now
+
+    return process.wait()
+
+
+def maybe_zoom_from_scroll(detail, effective_modifiers, last_trigger):
+    if detail not in {4, 5, 6, 7}:
+        return last_trigger
+    if MODIFIER_MASK and (effective_modifiers & MODIFIER_MASK) != MODIFIER_MASK:
+        return last_trigger
+
+    now = time.monotonic()
+    if now - last_trigger < COOLDOWN:
+        return last_trigger
+
+    if detail in {4, 7}:
+        zoom("in")
+        log(f"zoom in from scroll detail={detail} modifiers=0x{effective_modifiers:x}")
+    else:
+        zoom("out")
+        log(f"zoom out from scroll detail={detail} modifiers=0x{effective_modifiers:x}")
+    return now
+
+
+def super_pressed():
+    if not SUPER_KEYCODES:
+        return True
+    state = desktop_output(["xinput", "query-state", KEYBOARD_HINT])
+    return any(f"key[{code}]=down" in state for code in SUPER_KEYCODES)
+
+
+def maybe_zoom_from_delta(delta_x, delta_y, last_trigger):
+    if not delta_x and not delta_y:
+        return last_trigger
+    if not super_pressed():
+        return last_trigger
+
+    now = time.monotonic()
+    if now - last_trigger < COOLDOWN:
+        return last_trigger
+
+    dominant = delta_y if abs(delta_y) >= abs(delta_x) else delta_x
+    if dominant < 0:
+        zoom("in")
+        log(f"zoom in from scroll delta=({delta_x:.2f},{delta_y:.2f})")
+    else:
+        zoom("out")
+        log(f"zoom out from scroll delta=({delta_x:.2f},{delta_y:.2f})")
+    return now
+
+
+def watch_xinput_scroll(device_id):
+    process = subprocess.Popen(
+        ["stdbuf", "-oL", "xinput", "test-xi2", device_id],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+    )
+
+    detail = None
+    in_button_press = False
+    collecting_valuators = False
+    delta_x = 0.0
+    delta_y = 0.0
+    last_trigger = 0.0
+
+    def flush_scroll_delta():
+        nonlocal delta_x, delta_y, last_trigger
+        if delta_x or delta_y:
+            last_trigger = maybe_zoom_from_delta(delta_x, delta_y, last_trigger)
+        delta_x = 0.0
+        delta_y = 0.0
+
+    assert process.stdout is not None
+    for raw_line in process.stdout:
+        line = raw_line.strip()
+        if line.startswith("EVENT type"):
+            flush_scroll_delta()
+            in_button_press = "(ButtonPress)" in line or "(RawButtonPress)" in line
+            collecting_valuators = False
+            detail = None
+            continue
+
+        if line.startswith("valuators:"):
+            collecting_valuators = True
+            continue
+
+        if collecting_valuators:
+            match = re.match(r"([23]):\s*(-?[0-9.]+)", line)
+            if match:
+                axis = int(match.group(1))
+                value = float(match.group(2))
+                if axis == 2:
+                    delta_x += value
+                else:
+                    delta_y += value
+                continue
+            collecting_valuators = False
+
+        if not in_button_press:
+            continue
+
+        if line.startswith("detail:"):
+            try:
+                detail = int(line.split(":", 1)[1].strip())
+            except ValueError:
+                detail = None
+            continue
+
+        if line.startswith("modifiers:") and detail is not None:
+            match = re.search(r"effective:\s*0x([0-9a-fA-F]+)", line)
+            if not match:
+                continue
+            effective_modifiers = int(match.group(1), 16)
+            last_trigger = maybe_zoom_from_scroll(detail, effective_modifiers, last_trigger)
+
+    return process.wait()
+
+
+def active_points(slots):
+    points = []
+    for slot in slots.values():
+        if slot.get("tracking_id", 0) < 0:
+            continue
+        if "x" in slot and "y" in slot:
+            points.append((slot["x"], slot["y"]))
+    return points
+
+
+def watch_evdev(path):
+    slots = {0: {"tracking_id": -1}}
+    current_slot = 0
+    baseline = None
+    last_trigger = 0.0
+
+    with open(path, "rb", buffering=0) as device:
+        while True:
+            data = device.read(INPUT_EVENT.size)
+            if len(data) != INPUT_EVENT.size:
+                break
+
+            _sec, _usec, event_type, code, value = INPUT_EVENT.unpack(data)
+            if event_type == EV_ABS:
+                slot = slots.setdefault(current_slot, {"tracking_id": 0})
+                if code == ABS_MT_SLOT:
+                    current_slot = value
+                    slots.setdefault(current_slot, {"tracking_id": 0})
+                elif code == ABS_MT_TRACKING_ID:
+                    slot["tracking_id"] = value
+                    if value < 0:
+                        slot.pop("x", None)
+                        slot.pop("y", None)
+                elif code == ABS_MT_POSITION_X:
+                    slot["x"] = value
+                    slot.setdefault("tracking_id", 0)
+                elif code == ABS_MT_POSITION_Y:
+                    slot["y"] = value
+                    slot.setdefault("tracking_id", 0)
+                elif code == ABS_X:
+                    slots.setdefault(0, {"tracking_id": 0})["x"] = value
+                elif code == ABS_Y:
+                    slots.setdefault(0, {"tracking_id": 0})["y"] = value
+                continue
+
+            if event_type != EV_SYN or code != SYN_REPORT:
+                continue
+
+            points = active_points(slots)
+            if len(points) != 2:
+                baseline = None
+                continue
+
+            distance = math.dist(points[0], points[1])
+            if distance <= 0:
+                continue
+
+            if baseline is None:
+                baseline = distance
+                continue
+
+            now = time.monotonic()
+            if now - last_trigger < COOLDOWN:
+                continue
+
+            ratio = distance / baseline
+            if ratio >= THRESHOLD:
+                zoom("in")
+                baseline = distance
+                last_trigger = now
+            elif ratio <= 1.0 / THRESHOLD:
+                zoom("out")
+                baseline = distance
+                last_trigger = now
+
+
+def main():
+    if "--once-in" in sys.argv:
+        zoom("in")
+        return 0
+    if "--once-out" in sys.argv:
+        zoom("out")
+        return 0
+    if "--print-device" in sys.argv:
+        print(resolve_touchpad())
+        return 0
+    if "--print-event-device" in sys.argv:
+        print(EVENT_DEVICE)
+        return 0
+    if "--evdev" in sys.argv:
+        index = sys.argv.index("--evdev")
+        path = sys.argv[index + 1] if index + 1 < len(sys.argv) else EVENT_DEVICE
+        log(f"watching evdev device {path}")
+        watch_evdev(path)
+        return 0
+    if "--xinput-scroll" in sys.argv:
+        device_id = resolve_touchpad()
+        log(f"watching XInput scroll on device {device_id}")
+        watch_xinput_scroll(device_id)
+        return 0
+
+    log("started")
+    while True:
+        try:
+            device_id = resolve_touchpad()
+            log(f"watching XInput scroll on device {device_id}")
+            code = watch_xinput_scroll(device_id)
+            log(f"xinput exited with code {code}; restarting")
+        except Exception as exc:
+            log(f"error: {exc}")
+        time.sleep(2)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

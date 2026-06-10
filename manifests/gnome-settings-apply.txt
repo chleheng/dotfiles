@@ -1,5 +1,9 @@
 # Focused GNOME settings worth replaying on a new Ubuntu desktop.
 # Format: schema key value
+org.gnome.desktop.a11y.applications screen-magnifier-enabled false
+org.gnome.desktop.a11y.magnifier mag-factor 2.0
+org.gnome.desktop.a11y.magnifier mouse-tracking 'proportional'
+org.gnome.desktop.a11y.magnifier screen-position 'full-screen'
 org.gnome.desktop.interface clock-format '24h'
 org.gnome.desktop.interface clock-show-date true
 org.gnome.desktop.interface enable-hot-corners false
@@ -22,6 +26,9 @@ org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 3600
 org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 6000
 org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'suspend'
+org.gnome.settings-daemon.plugins.media-keys magnifier ['<Alt><Super>8']
+org.gnome.settings-daemon.plugins.media-keys magnifier-zoom-in ['<Alt><Super>equal']
+org.gnome.settings-daemon.plugins.media-keys magnifier-zoom-out ['<Alt><Super>minus']
 org.gnome.shell enabled-extensions ['ding@rastersoft.com', 'ubuntu-dock@ubuntu.com', 'tiling-assistant@ubuntu.com']
 org.gnome.shell favorite-apps ['google-chrome.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'code.desktop', 'org.gnome.TextEditor.desktop', 'com.obsproject.Studio.desktop']
 org.gnome.shell.extensions.dash-to-dock click-action 'focus-or-appspread'

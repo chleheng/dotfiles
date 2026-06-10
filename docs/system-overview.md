@@ -25,6 +25,7 @@ Development and AI:
 - Git, GitHub CLI, npm, Python venv/pip, Vim, tmux.
 - Global npm package: `@anthropic-ai/claude-code`.
 - Helper scripts: `bin/claude-backup`, `bin/claude-done-notify.sh`.
+- Screen zoom helper: `bin/touchpad-screen-zoom`, mapping touchpad pinch gestures to GNOME screen magnifier shortcuts.
 
 Desktop utilities:
 
@@ -61,6 +62,7 @@ GNOME/app settings captured in portable form:
 - Dock on the left, `Super+number` behavior retained, scroll action switches workspace.
 - AC idle sleep disabled; battery idle suspend retained.
 - GNOME Night Light disabled because Redshift/Gammastep handle warmth.
+- GNOME screen magnifier shortcuts retained: `Alt+Super+8` toggle, `Alt+Super+=` zoom in, `Alt+Super+-` zoom out.
 
 ## Redshift Behavior
 
@@ -103,11 +105,13 @@ Config files:
 - `config/fcitx5/conf/notifications.conf`
 - `config/Code/User/settings.json`
 - `config/chrome-web-apps/*.desktop`
+- `config/systemd/user/touchpad-screen-zoom.service`
 
 Local executable scripts:
 
 - `bin/claude-backup`
 - `bin/claude-done-notify.sh`
+- `bin/touchpad-screen-zoom`
 
 ## Deliberately Not Backed Up
 
