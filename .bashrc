@@ -127,13 +127,53 @@ DENSEPOSE=/mnt/windows/Users/densepose/Documents/densepose/rpi_wifi_stream
 export QT_QPA_PLATFORM_PLUGIN_PATH=/home/q1/rpi_venv/lib/python3.12/site-packages/PyQt5/Qt5/plugins/platforms
 alias rpi='cd "$DENSEPOSE" && source ~/venvs/rpi_wifi_stream/bin/activate'
 alias calibrate='cd "$DENSEPOSE" && source ~/venvs/rpi_wifi_stream/bin/activate && python calibration/main_5ghz.py'
+_stop_color_temperature_controllers() {
+  local wrapper_pids
+
+  if command -v systemctl >/dev/null 2>&1; then
+    systemctl --user stop gammastep.service gammastep-indicator.service 2>/dev/null || true
+  fi
+
+  pkill -x redshift 2>/dev/null || true
+  pkill -x gammastep 2>/dev/null || true
+  wrapper_pids="$(pgrep -f '[r]edshift-gtk|[g]ammastep-indicator' 2>/dev/null)" && kill $wrapper_pids 2>/dev/null || true
+}
 r() {
   local temp="${1:-6500}"
-  local gtk_pids
+  local tool method log_file pid
 
-  pkill -x redshift 2>/dev/null
-  gtk_pids="$(pgrep -f '[r]edshift-gtk')" && kill $gtk_pids 2>/dev/null
-  redshift -P -O "$temp"
+  if ! [[ "$temp" =~ ^[0-9]+$ ]]; then
+    echo "Usage: r [temperature-kelvin]" >&2
+    return 2
+  fi
+
+  _stop_color_temperature_controllers
+  gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled false 2>/dev/null || true
+
+  if [ "$temp" = "6500" ]; then
+    redshift -x 2>/dev/null || true
+    gammastep -x 2>/dev/null || true
+    return 0
+  fi
+
+  if [ "${XDG_SESSION_TYPE:-}" = "wayland" ] && command -v gammastep >/dev/null 2>&1; then
+    tool=gammastep
+    method=wayland
+  elif command -v redshift >/dev/null 2>&1; then
+    tool=redshift
+    method=randr
+  elif command -v gammastep >/dev/null 2>&1; then
+    tool=gammastep
+    method=randr
+  else
+    echo "redshift/gammastep not found" >&2
+    return 127
+  fi
+
+  log_file="${XDG_RUNTIME_DIR:-/tmp}/redshift-manual.log"
+  nohup "$tool" -P -r -m "$method" -l 1.35:103.82 -t "$temp:$temp" >"$log_file" 2>&1 &
+  pid=$!
+  disown "$pid" 2>/dev/null || true
 }
 alias open='xdg-open'
 if [ -d "$DENSEPOSE" ]; then

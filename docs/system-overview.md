@@ -66,12 +66,13 @@ GNOME/app settings captured in portable form:
 
 ## Redshift Behavior
 
-The current setup intentionally avoids a continuously running Redshift controller:
+The current setup intentionally avoids a scheduled Redshift controller:
 
 - Redshift config: `1700K` day, `1000K` night, manual Singapore coordinates, `randr`.
 - Gammastep config: `1800K` day, `1100K` night, manual Singapore coordinates, `wayland`.
 - Redshift/Gammastep indicators are present but autostart is disabled/hidden.
-- `.bashrc` function `r()` stops `redshift` and `redshift-gtk`, resets gamma with `-P`, then applies the requested temperature.
+- `.bashrc` function `r()` stops Redshift/Gammastep controllers, disables GNOME Night Light, then starts Redshift/Gammastep in a persistent fixed-temperature mode so display gamma resets do not silently undo the manual setting.
+- Automatic day/night mode fades smoothly during twilight; explicit `dawn-time` and `dusk-time` ranges can be added to the Redshift/Gammastep configs when fixed clock times are preferred over solar times.
 
 Examples:
 

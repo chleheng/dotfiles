@@ -60,14 +60,16 @@ Review the diff before committing. The snapshot intentionally skips browser prof
 
 ## Redshift and warm display setup
 
-Redshift is deliberately treated as a manual/one-shot tool:
+Redshift is deliberately treated as a manual tool:
 
 - `config/redshift/redshift.conf`: day `1700K`, night `1000K`, manual Singapore coordinates, `randr`.
 - `config/gammastep/config.ini`: day `1800K`, night `1100K`, manual Singapore coordinates, `wayland`.
 - `config/autostart/redshift-gtk.desktop` and `config/autostart/gammastep-indicator.desktop` are disabled/hidden.
-- `.bashrc` defines `r()`, so `r 3000` stops running Redshift controllers, resets gamma ramps, and applies `3000K`; plain `r` resets to `6500K`.
+- `.bashrc` defines `r()`, so `r 3000` stops running Redshift/Gammastep controllers, disables GNOME Night Light, and starts a small persistent Redshift process with both day and night pinned to `3000K`; plain `r` stops controllers and resets to `6500K`.
 
-This avoids the failure mode where `redshift-gtk` immediately overwrites a one-shot `redshift -O 3000`.
+This avoids the failure mode where `redshift-gtk`, Gammastep, GNOME Night Light, or a display gamma reset overwrites a one-shot `redshift -O 3000`.
+
+If using Redshift/Gammastep's automatic day/night mode instead, the transition is gradual during twilight. Timing can be set without changing location by adding matching `dawn-time=HH:MM-HH:MM` and `dusk-time=HH:MM-HH:MM` entries to the config.
 
 ## Screen zoom setup
 
