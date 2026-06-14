@@ -228,6 +228,7 @@ install_configs() {
   install_file "$repo_root/config/Code/User/keybindings.json" "$HOME/.config/Code/User/keybindings.json"
   install_file "$repo_root/config/systemd/user/touchpad-screen-zoom.service" "$HOME/.config/systemd/user/touchpad-screen-zoom.service"
   install_file "$repo_root/config/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
+  install_file "$repo_root/config/codex/config.toml" "$HOME/.codex/config.toml"
 
   find "$repo_root/config/chrome-web-apps" -maxdepth 1 -type f -name '*.desktop' 2>/dev/null \
     | while IFS= read -r file; do
@@ -236,6 +237,7 @@ install_configs() {
 
   install_file "$repo_root/bin/claude-backup" "$HOME/bin/claude-backup" 0755
   install_file "$repo_root/bin/claude-done-notify.sh" "$HOME/.local/bin/claude-done-notify.sh" 0755
+  install_file "$repo_root/bin/codex-done-notify.sh" "$HOME/.local/bin/codex-done-notify.sh" 0755
   install_file "$repo_root/bin/touchpad-screen-zoom" "$HOME/.local/bin/touchpad-screen-zoom" 0755
   enable_user_service touchpad-screen-zoom.service
 

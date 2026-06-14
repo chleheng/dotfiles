@@ -184,6 +184,7 @@ copy_file "$HOME/.config/Code/User/settings.json" "config/Code/User/settings.jso
 copy_file "$HOME/.config/Code/User/keybindings.json" "config/Code/User/keybindings.json"
 copy_file "$HOME/.config/systemd/user/touchpad-screen-zoom.service" "config/systemd/user/touchpad-screen-zoom.service"
 copy_file "$HOME/.codex/AGENTS.md" "config/codex/AGENTS.md"
+copy_file "$HOME/.codex/config.toml" "config/codex/config.toml"
 
 find "$HOME/.local/share/applications" -maxdepth 1 -type f -name 'chrome-*-Default.desktop' 2>/dev/null \
   | while IFS= read -r file; do
@@ -192,6 +193,7 @@ find "$HOME/.local/share/applications" -maxdepth 1 -type f -name 'chrome-*-Defau
 
 copy_executable "$HOME/bin/claude-backup" "bin/claude-backup"
 copy_executable "$HOME/.local/bin/claude-done-notify.sh" "bin/claude-done-notify.sh"
+copy_executable "$HOME/.local/bin/codex-done-notify.sh" "bin/codex-done-notify.sh"
 copy_executable "$HOME/.local/bin/touchpad-screen-zoom" "bin/touchpad-screen-zoom"
 
 if command -v perl >/dev/null 2>&1; then

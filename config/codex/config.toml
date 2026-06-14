@@ -1,0 +1,7 @@
+model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+service_tier = "priority"
+notify = ["/home/q1/.local/bin/codex-done-notify.sh"]
+
+[projects."/mnt/windows/Users/densepose/Documents/densepose"]
+trust_level = "trusted"
