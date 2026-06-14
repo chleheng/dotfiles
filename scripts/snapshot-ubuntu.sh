@@ -9,6 +9,7 @@ mkdir -p \
   "$repo_root/config/Code/User" \
   "$repo_root/config/autostart" \
   "$repo_root/config/chrome-web-apps" \
+  "$repo_root/config/codex" \
   "$repo_root/config/copyq" \
   "$repo_root/config/fcitx5/conf" \
   "$repo_root/config/gammastep" \
@@ -182,6 +183,7 @@ copy_file "$HOME/.config/fcitx5/conf/notifications.conf" "config/fcitx5/conf/not
 copy_file "$HOME/.config/Code/User/settings.json" "config/Code/User/settings.json"
 copy_file "$HOME/.config/Code/User/keybindings.json" "config/Code/User/keybindings.json"
 copy_file "$HOME/.config/systemd/user/touchpad-screen-zoom.service" "config/systemd/user/touchpad-screen-zoom.service"
+copy_file "$HOME/.codex/AGENTS.md" "config/codex/AGENTS.md"
 
 find "$HOME/.local/share/applications" -maxdepth 1 -type f -name 'chrome-*-Default.desktop' 2>/dev/null \
   | while IFS= read -r file; do

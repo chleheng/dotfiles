@@ -57,6 +57,7 @@ Review the diff before committing. The snapshot intentionally skips browser prof
 - `manifests/vscode-extensions.txt`: VS Code extensions.
 - `manifests/gnome-settings-selected.txt`: broad selected GNOME snapshot.
 - `manifests/gnome-settings-apply.txt`: focused GNOME settings replayed by bootstrap.
+- `config/codex/AGENTS.md`: global Codex note pointing densepose work at Claude's persisted project memory.
 
 ## Redshift and warm display setup
 

@@ -227,6 +227,7 @@ install_configs() {
   install_file "$repo_root/config/Code/User/settings.json" "$HOME/.config/Code/User/settings.json"
   install_file "$repo_root/config/Code/User/keybindings.json" "$HOME/.config/Code/User/keybindings.json"
   install_file "$repo_root/config/systemd/user/touchpad-screen-zoom.service" "$HOME/.config/systemd/user/touchpad-screen-zoom.service"
+  install_file "$repo_root/config/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
 
   find "$repo_root/config/chrome-web-apps" -maxdepth 1 -type f -name '*.desktop' 2>/dev/null \
     | while IFS= read -r file; do
