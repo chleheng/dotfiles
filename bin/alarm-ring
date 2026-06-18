@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage: alarm-ring [label...]
+
+Persistent desktop alarm. Sets the default audio sink loud, then loops a
+non-sharp alert sound until dismissed with alarm-stop or the dialog button.
+
+Environment:
+  ALARM_VOLUME=1.0        WirePlumber volume value; 1.0 is 100%.
+  ALARM_SOUND=/path/file  Optional sound file to loop.
+  ALARM_GAP=1.0          Seconds between repeated sounds.
+USAGE
+}
+
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+  usage
+  exit 0
+fi
+
+label="${*:-Alarm}"
+state_dir="${XDG_RUNTIME_DIR:-/tmp}/loud-alarm"
+stop_file="$state_dir/stop"
+pid_file="$state_dir/pid"
+child_pid=""
+
+mkdir -p "$state_dir"
+rm -f "$stop_file"
+printf '%s\n' "$$" > "$pid_file"
+
+cleanup() {
+  rm -f "$pid_file"
+  if [ -n "$child_pid" ] && kill -0 "$child_pid" 2>/dev/null; then
+    kill "$child_pid" 2>/dev/null || true
+  fi
+}
+trap cleanup EXIT INT TERM
+
+set_loud() {
+  if command -v wpctl >/dev/null 2>&1; then
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 >/dev/null 2>&1 || true
+    wpctl set-volume @DEFAULT_AUDIO_SINK@ "${ALARM_VOLUME:-1.0}" >/dev/null 2>&1 || true
+  fi
+
+  if command -v pactl >/dev/null 2>&1; then
+    pactl set-sink-mute @DEFAULT_SINK@ 0 >/dev/null 2>&1 || true
+    pactl set-sink-volume @DEFAULT_SINK@ 100% >/dev/null 2>&1 || true
+  fi
+}
+
+choose_sound() {
+  if [ -n "${ALARM_SOUND:-}" ] && [ -f "$ALARM_SOUND" ]; then
+    printf '%s\n' "$ALARM_SOUND"
+    return 0
+  fi
+
+  for file in \
+    /usr/share/sounds/gnome/default/alerts/hum.ogg \
+    /usr/share/sounds/Yaru/stereo/complete.oga \
+    /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
+  do
+    if [ -f "$file" ]; then
+      printf '%s\n' "$file"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+play_once() {
+  local sound="$1"
+
+  if [ -n "$sound" ]; then
+    if command -v pw-play >/dev/null 2>&1; then
+      pw-play "$sound" &
+      child_pid="$!"
+      wait "$child_pid" 2>/dev/null || true
+      child_pid=""
+      return 0
+    fi
+
+    if command -v ffplay >/dev/null 2>&1; then
+      ffplay -nodisp -autoexit -hide_banner -loglevel error "$sound" &
+      child_pid="$!"
+      wait "$child_pid" 2>/dev/null || true
+      child_pid=""
+      return 0
+    fi
+  fi
+
+  if command -v ffplay >/dev/null 2>&1; then
+    ffplay -nodisp -autoexit -hide_banner -loglevel error \
+      -f lavfi 'sine=frequency=330:sample_rate=44100:duration=1.4,afade=t=in:st=0:d=0.25,afade=t=out:st=1.1:d=0.3,volume=0.35' &
+    child_pid="$!"
+    wait "$child_pid" 2>/dev/null || true
+    child_pid=""
+    return 0
+  fi
+
+  printf '\a' >/dev/tty 2>/dev/null || true
+}
+
+notify() {
+  if command -v notify-send >/dev/null 2>&1; then
+    notify-send -u critical -a alarm-ring "Alarm" "$label"$'\n'"Run alarm-stop to dismiss." || true
+  fi
+}
+
+show_dialog() {
+  if command -v zenity >/dev/null 2>&1 && [ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then
+    (
+      zenity --warning \
+        --title="Alarm" \
+        --text="$label"$'\n\n'"Press Dismiss or run alarm-stop." \
+        --ok-label="Dismiss" >/dev/null 2>&1 && touch "$stop_file"
+    ) &
+  fi
+}
+
+sound="$(choose_sound || true)"
+notify
+show_dialog
+
+while [ ! -f "$stop_file" ]; do
+  set_loud
+  play_once "$sound"
+  sleep "${ALARM_GAP:-1.0}"
+done

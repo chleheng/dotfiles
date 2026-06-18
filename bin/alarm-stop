@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+state_dir="${XDG_RUNTIME_DIR:-/tmp}/loud-alarm"
+stop_file="$state_dir/stop"
+pid_file="$state_dir/pid"
+
+mkdir -p "$state_dir"
+touch "$stop_file"
+
+if [ -r "$pid_file" ]; then
+  pid="$(sed -n '1p' "$pid_file")"
+  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+    pkill -TERM -P "$pid" 2>/dev/null || true
+    kill -TERM "$pid" 2>/dev/null || true
+  fi
+fi
+
+systemctl --user stop 'alarm-*.service' 'alarm-*.timer' >/dev/null 2>&1 || true
+
+if command -v notify-send >/dev/null 2>&1; then
+  notify-send -a alarm-stop "Alarm dismissed" || true
+fi
+
+printf 'Alarm dismissed.\n'

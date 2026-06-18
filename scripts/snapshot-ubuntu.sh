@@ -192,6 +192,9 @@ find "$HOME/.local/share/applications" -maxdepth 1 -type f -name 'chrome-*-Defau
     done
 
 copy_executable "$HOME/bin/claude-backup" "bin/claude-backup"
+copy_executable "$HOME/.local/bin/alarm-in" "bin/alarm-in"
+copy_executable "$HOME/.local/bin/alarm-ring" "bin/alarm-ring"
+copy_executable "$HOME/.local/bin/alarm-stop" "bin/alarm-stop"
 copy_executable "$HOME/.local/bin/claude-done-notify.sh" "bin/claude-done-notify.sh"
 copy_executable "$HOME/.local/bin/codex-done-notify.sh" "bin/codex-done-notify.sh"
 copy_executable "$HOME/.local/bin/touchpad-screen-zoom" "bin/touchpad-screen-zoom"

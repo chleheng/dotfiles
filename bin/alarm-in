@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage: alarm-in [--dry-run] DELAY [label...]
+
+Examples:
+  alarm-in 25m
+  alarm-in 1h30m "leave for office"
+
+Schedules alarm-ring with user systemd. Dismiss a ringing alarm with:
+  alarm-stop
+USAGE
+}
+
+dry_run=false
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+  usage
+  exit 0
+elif [ "${1:-}" = "--dry-run" ]; then
+  dry_run=true
+  shift
+fi
+
+delay="${1:-}"
+if [ -z "$delay" ]; then
+  usage >&2
+  exit 2
+fi
+shift
+
+label="${*:-Alarm after $delay}"
+ring_cmd="$(command -v alarm-ring || true)"
+if [ -z "$ring_cmd" ]; then
+  if [ -x "$HOME/.local/bin/alarm-ring" ]; then
+    ring_cmd="$HOME/.local/bin/alarm-ring"
+  elif [ -x "$HOME/dotfiles/bin/alarm-ring" ]; then
+    ring_cmd="$HOME/dotfiles/bin/alarm-ring"
+  else
+    printf 'alarm-ring not found in PATH, ~/.local/bin, or ~/dotfiles/bin.\n' >&2
+    exit 1
+  fi
+fi
+
+unit="alarm-$(date '+%Y%m%d-%H%M%S')"
+
+if systemctl --user show-environment >/dev/null 2>&1; then
+  systemctl --user import-environment \
+    DISPLAY WAYLAND_DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR \
+    >/dev/null 2>&1 || true
+fi
+
+cmd=(
+  systemd-run
+  --user
+  --collect
+  --unit="$unit"
+  --description="Desktop alarm: $label"
+  --on-active="$delay"
+  --timer-property=AccuracySec=1s
+  "$ring_cmd"
+  "$label"
+)
+
+if $dry_run; then
+  printf '+'
+  printf ' %q' "${cmd[@]}"
+  printf '\n'
+else
+  "${cmd[@]}"
+  printf 'Scheduled %s for %s from now. Dismiss with alarm-stop.\n' "$unit" "$delay"
+fi

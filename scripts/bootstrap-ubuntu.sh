@@ -236,6 +236,9 @@ install_configs() {
       done
 
   install_file "$repo_root/bin/claude-backup" "$HOME/bin/claude-backup" 0755
+  install_file "$repo_root/bin/alarm-in" "$HOME/.local/bin/alarm-in" 0755
+  install_file "$repo_root/bin/alarm-ring" "$HOME/.local/bin/alarm-ring" 0755
+  install_file "$repo_root/bin/alarm-stop" "$HOME/.local/bin/alarm-stop" 0755
   install_file "$repo_root/bin/claude-done-notify.sh" "$HOME/.local/bin/claude-done-notify.sh" 0755
   install_file "$repo_root/bin/codex-done-notify.sh" "$HOME/.local/bin/codex-done-notify.sh" 0755
   install_file "$repo_root/bin/touchpad-screen-zoom" "$HOME/.local/bin/touchpad-screen-zoom" 0755

@@ -28,6 +28,7 @@ The bootstrap script backs up existing files into `~/.dotfiles-backup/<timestamp
 - Shell/editor dotfiles: `.bashrc`, `.profile`, `.xinputrc`, `.gitconfig`, `.vimrc`, `.tmux.conf`.
 - Safe app configs: Redshift, Gammastep, CopyQ settings, Fcitx5 profile, VS Code user settings, selected autostart entries.
 - Screen zoom helper: touchpad-to-GNOME-magnifier script plus user systemd service.
+- Lightweight desktop alarm helpers: `alarm-in`, `alarm-ring`, and `alarm-stop`.
 - App installs: curated apt packages, Telegram snap, VS Code extensions, npm globals.
 - Desktop tweaks: selected GNOME settings from `manifests/gnome-settings-apply.txt`.
 - Chrome web app launchers: Outlook PWA, WhatsApp Web, and Docs launchers from `config/chrome-web-apps/`.
@@ -82,6 +83,20 @@ If using Redshift/Gammastep's automatic day/night mode instead, the transition i
 - Emergency escape: `gsettings set org.gnome.desktop.a11y.applications screen-magnifier-enabled false`.
 
 See `docs/touchpad-screen-zoom.md` for service commands, tuning knobs, and notes about the X11 touchpad limitations found on this machine.
+
+## Desktop alarm helper
+
+`alarm-in` schedules a lightweight persistent alarm with user systemd:
+
+```bash
+alarm-in 25m
+alarm-in 1h30m "leave for office"
+alarm-stop
+```
+
+When it rings, `alarm-ring` unmutes the default PipeWire/WirePlumber audio sink, sets it to 100%, loops a non-sharp alert sound, sends a critical notification, and shows a dismiss dialog when the desktop session is available. `alarm-stop` dismisses the current alarm.
+
+The default sound is GNOME's soft `hum.ogg` alert. Override it with `ALARM_SOUND=/path/to/sound.ogg alarm-ring`, or set `ALARM_VOLUME` / `ALARM_GAP` for one-off tuning.
 
 ## Nuances for future rebuilds
 
