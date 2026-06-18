@@ -31,6 +31,7 @@ The bootstrap script backs up existing files into `~/.dotfiles-backup/<timestamp
 - App installs: curated apt packages, Telegram snap, VS Code extensions, npm globals.
 - Desktop tweaks: selected GNOME settings from `manifests/gnome-settings-apply.txt`.
 - Chrome web app launchers: Outlook PWA, WhatsApp Web, and Docs launchers from `config/chrome-web-apps/`.
+- Chrome managed policies: system policies from `config/chrome-policies/managed/` copied to `/etc/opt/chrome/policies/managed/` (currently: blank New Tab Page). Hand-maintained, not auto-snapshotted.
 
 ## Snapshot this machine again
 
