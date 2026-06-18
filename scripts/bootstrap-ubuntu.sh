@@ -250,17 +250,6 @@ install_configs() {
   fi
 }
 
-install_chrome_policies() {
-  local src_dir="$repo_root/config/chrome-policies/managed"
-  local dst_dir="/etc/opt/chrome/policies/managed"
-  [ -d "$src_dir" ] || return 0
-
-  find "$src_dir" -maxdepth 1 -type f -name '*.json' 2>/dev/null \
-    | while IFS= read -r file; do
-        sudo_run install -D -m 0644 "$file" "$dst_dir/$(basename "$file")"
-      done
-}
-
 apply_gsettings() {
   local file="$repo_root/manifests/gnome-settings-apply.txt"
   [ -f "$file" ] || return 0
@@ -303,7 +292,6 @@ fi
 
 if ! $skip_config; then
   install_configs
-  install_chrome_policies
 fi
 
 if ! $skip_gnome; then
