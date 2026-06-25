@@ -127,6 +127,40 @@ DENSEPOSE=/mnt/windows/Users/densepose/Documents/densepose/rpi_wifi_stream
 export QT_QPA_PLATFORM_PLUGIN_PATH=/home/q1/rpi_venv/lib/python3.12/site-packages/PyQt5/Qt5/plugins/platforms
 alias rpi='cd "$DENSEPOSE" && source ~/venvs/rpi_wifi_stream/bin/activate'
 alias calibrate='cd "$DENSEPOSE" && source ~/venvs/rpi_wifi_stream/bin/activate && python calibration/main_5ghz.py'
+codex() {
+  command codex --dangerously-bypass-approvals-and-sandbox "$@"
+}
+bashrc-push() {
+  local repo="${DOTFILES_REPO:-$HOME/dotfiles}"
+  local message="${1:-Update bashrc}"
+  local branch
+
+  if [ ! -d "$repo/.git" ]; then
+    echo "dotfiles repo not found: $repo" >&2
+    return 1
+  fi
+
+  install -D -m 0644 "$HOME/.bashrc" "$repo/.bashrc"
+  git -C "$repo" add .bashrc
+
+  if git -C "$repo" diff --cached --quiet -- .bashrc; then
+    echo "No .bashrc changes to commit."
+    return 0
+  fi
+
+  git -C "$repo" commit -m "$message" -- .bashrc || return
+
+  if git -C "$repo" rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1; then
+    git -C "$repo" push
+  else
+    branch="$(git -C "$repo" branch --show-current)"
+    if [ -z "$branch" ]; then
+      echo "Cannot push from a detached dotfiles HEAD." >&2
+      return 1
+    fi
+    git -C "$repo" push -u origin "$branch"
+  fi
+}
 _stop_color_temperature_controllers() {
   local wrapper_pids
 
@@ -180,4 +214,5 @@ if [ -d "$DENSEPOSE" ]; then
   cd "$DENSEPOSE"
 fi
 export PATH="$HOME/.local/bin:$PATH"
-alias wi='cd "$DENSEPOSE" && bash ./local_client/watch_iperf.sh'
+source ~/venvs/rpi_wifi_stream/bin/activate 
+source /mnt/windows/Users/densepose/Documents/densepose/rpi_wifi_stream/aliases.sh
