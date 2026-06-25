@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+repo="${DOTFILES_REPO:-$HOME/dotfiles}"
+src="${BASHRC_SOURCE:-$HOME/.bashrc}"
+message="${1:-Auto-update bashrc}"
+lock_file="${XDG_RUNTIME_DIR:-/tmp}/bashrc-push.lock"
+delay="${BASHRC_AUTOPUSH_DELAY:-0}"
+
+if [ ! -d "$repo/.git" ]; then
+  echo "dotfiles repo not found: $repo" >&2
+  exit 1
+fi
+
+if [ ! -f "$src" ]; then
+  echo "bashrc not found: $src" >&2
+  exit 1
+fi
+
+exec 9>"$lock_file"
+flock 9
+
+if [ "$delay" != "0" ]; then
+  sleep "$delay"
+fi
+
+if ! bash -n "$src"; then
+  echo "Not committing: $src has a Bash syntax error." >&2
+  exit 1
+fi
+
+install -D -m 0644 "$src" "$repo/.bashrc"
+git -C "$repo" add .bashrc
+
+if git -C "$repo" diff --cached --quiet -- .bashrc; then
+  echo "No .bashrc changes to commit."
+  exit 0
+fi
+
+git -C "$repo" commit -m "$message" -- .bashrc
+
+if git -C "$repo" rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1; then
+  git -C "$repo" push
+else
+  branch="$(git -C "$repo" branch --show-current)"
+  if [ -z "$branch" ]; then
+    echo "Cannot push from a detached dotfiles HEAD." >&2
+    exit 1
+  fi
+  git -C "$repo" push -u origin "$branch"
+fi

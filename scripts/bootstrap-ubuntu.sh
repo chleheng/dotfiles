@@ -101,6 +101,26 @@ install_file() {
   install -D -m "$mode" "$src" "$dst"
 }
 
+install_symlink() {
+  local src="$1"
+  local dst="$2"
+
+  [ -e "$src" ] || return 0
+  if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
+    return 0
+  fi
+
+  if $dry_run; then
+    printf '+ ln -sfn %q %q\n' "$src" "$dst"
+    return 0
+  fi
+
+  backup_path "$dst"
+  mkdir -p "$(dirname "$dst")"
+  rm -f "$dst"
+  ln -s "$src" "$dst"
+}
+
 install_apt_packages() {
   local list_file="$1"
   mapfile -t packages < <(read_list "$list_file")
@@ -227,7 +247,9 @@ install_configs() {
   install_file "$repo_root/config/Code/User/settings.json" "$HOME/.config/Code/User/settings.json"
   install_file "$repo_root/config/Code/User/keybindings.json" "$HOME/.config/Code/User/keybindings.json"
   install_file "$repo_root/config/systemd/user/touchpad-screen-zoom.service" "$HOME/.config/systemd/user/touchpad-screen-zoom.service"
-  install_file "$repo_root/config/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
+  install_file "$repo_root/config/systemd/user/bashrc-autopush.service" "$HOME/.config/systemd/user/bashrc-autopush.service"
+  install_file "$repo_root/config/systemd/user/bashrc-autopush.path" "$HOME/.config/systemd/user/bashrc-autopush.path"
+  install_symlink "$repo_root/config/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
   install_file "$repo_root/config/codex/config.toml" "$HOME/.codex/config.toml"
 
   find "$repo_root/config/chrome-web-apps" -maxdepth 1 -type f -name '*.desktop' 2>/dev/null \
@@ -242,7 +264,9 @@ install_configs() {
   install_file "$repo_root/bin/claude-done-notify.sh" "$HOME/.local/bin/claude-done-notify.sh" 0755
   install_file "$repo_root/bin/codex-done-notify.sh" "$HOME/.local/bin/codex-done-notify.sh" 0755
   install_file "$repo_root/bin/touchpad-screen-zoom" "$HOME/.local/bin/touchpad-screen-zoom" 0755
+  install_file "$repo_root/bin/bashrc-push" "$HOME/.local/bin/bashrc-push" 0755
   enable_user_service touchpad-screen-zoom.service
+  enable_user_service bashrc-autopush.path
 
   if command -v im-config >/dev/null 2>&1; then
     run im-config -n fcitx5 || true

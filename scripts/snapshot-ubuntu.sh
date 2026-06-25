@@ -20,18 +20,22 @@ mkdir -p \
 copy_file() {
   local src="$1"
   local dst="$2"
+  local target="$repo_root/$dst"
 
   if [ -f "$src" ]; then
-    install -D -m 0644 "$src" "$repo_root/$dst"
+    [ -e "$target" ] && [ "$src" -ef "$target" ] && return 0
+    install -D -m 0644 "$src" "$target"
   fi
 }
 
 copy_executable() {
   local src="$1"
   local dst="$2"
+  local target="$repo_root/$dst"
 
   if [ -f "$src" ]; then
-    install -D -m 0755 "$src" "$repo_root/$dst"
+    [ -e "$target" ] && [ "$src" -ef "$target" ] && return 0
+    install -D -m 0755 "$src" "$target"
   fi
 }
 
@@ -183,6 +187,8 @@ copy_file "$HOME/.config/fcitx5/conf/notifications.conf" "config/fcitx5/conf/not
 copy_file "$HOME/.config/Code/User/settings.json" "config/Code/User/settings.json"
 copy_file "$HOME/.config/Code/User/keybindings.json" "config/Code/User/keybindings.json"
 copy_file "$HOME/.config/systemd/user/touchpad-screen-zoom.service" "config/systemd/user/touchpad-screen-zoom.service"
+copy_file "$HOME/.config/systemd/user/bashrc-autopush.service" "config/systemd/user/bashrc-autopush.service"
+copy_file "$HOME/.config/systemd/user/bashrc-autopush.path" "config/systemd/user/bashrc-autopush.path"
 copy_file "$HOME/.codex/AGENTS.md" "config/codex/AGENTS.md"
 copy_file "$HOME/.codex/config.toml" "config/codex/config.toml"
 
@@ -198,6 +204,7 @@ copy_executable "$HOME/.local/bin/alarm-stop" "bin/alarm-stop"
 copy_executable "$HOME/.local/bin/claude-done-notify.sh" "bin/claude-done-notify.sh"
 copy_executable "$HOME/.local/bin/codex-done-notify.sh" "bin/codex-done-notify.sh"
 copy_executable "$HOME/.local/bin/touchpad-screen-zoom" "bin/touchpad-screen-zoom"
+copy_executable "$HOME/.local/bin/bashrc-push" "bin/bashrc-push"
 
 if command -v perl >/dev/null 2>&1; then
   find "$repo_root" -path "$repo_root/.git" -prune -o -type f \( \

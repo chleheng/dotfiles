@@ -1,0 +1,10 @@
+[Unit]
+Description=Watch ~/.bashrc for dotfiles autopush
+
+[Path]
+PathChanged=%h/.bashrc
+PathModified=%h/.bashrc
+Unit=bashrc-autopush.service
+
+[Install]
+WantedBy=default.target

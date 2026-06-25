@@ -131,35 +131,14 @@ codex() {
   command codex --dangerously-bypass-approvals-and-sandbox "$@"
 }
 bashrc-push() {
-  local repo="${DOTFILES_REPO:-$HOME/dotfiles}"
-  local message="${1:-Update bashrc}"
-  local branch
+  local helper="$HOME/.local/bin/bashrc-push"
 
-  if [ ! -d "$repo/.git" ]; then
-    echo "dotfiles repo not found: $repo" >&2
+  if [ ! -x "$helper" ]; then
+    echo "bashrc-push helper not found: $helper" >&2
     return 1
   fi
 
-  install -D -m 0644 "$HOME/.bashrc" "$repo/.bashrc"
-  git -C "$repo" add .bashrc
-
-  if git -C "$repo" diff --cached --quiet -- .bashrc; then
-    echo "No .bashrc changes to commit."
-    return 0
-  fi
-
-  git -C "$repo" commit -m "$message" -- .bashrc || return
-
-  if git -C "$repo" rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1; then
-    git -C "$repo" push
-  else
-    branch="$(git -C "$repo" branch --show-current)"
-    if [ -z "$branch" ]; then
-      echo "Cannot push from a detached dotfiles HEAD." >&2
-      return 1
-    fi
-    git -C "$repo" push -u origin "$branch"
-  fi
+  "$helper" "$@"
 }
 _stop_color_temperature_controllers() {
   local wrapper_pids

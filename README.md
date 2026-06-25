@@ -32,6 +32,8 @@ The bootstrap script backs up existing files into `~/.dotfiles-backup/<timestamp
 - App installs: curated apt packages, Telegram snap, VS Code extensions, npm globals.
 - Desktop tweaks: selected GNOME settings from `manifests/gnome-settings-apply.txt`.
 - Chrome web app launchers: Outlook PWA, WhatsApp Web, and Docs launchers from `config/chrome-web-apps/`.
+- Codex global instructions: `~/.codex/AGENTS.md` is restored as a symlink to `config/codex/AGENTS.md`, so edits stay in dotfiles instead of drifting into an untracked copy.
+- Bash safety net: `bashrc-push` plus a user systemd watcher that commits and pushes `~/.bashrc` after saves.
 
 ## Snapshot this machine again
 
@@ -58,7 +60,7 @@ Review the diff before committing. The snapshot intentionally skips browser prof
 - `manifests/vscode-extensions.txt`: VS Code extensions.
 - `manifests/gnome-settings-selected.txt`: broad selected GNOME snapshot.
 - `manifests/gnome-settings-apply.txt`: focused GNOME settings replayed by bootstrap.
-- `config/codex/AGENTS.md`: global Codex note pointing densepose work at Claude's persisted project memory.
+- `config/codex/AGENTS.md`: global Codex note pointing densepose work at Claude's persisted project memory. On this machine, `~/.codex/AGENTS.md` should symlink here.
 
 ## Redshift and warm display setup
 
@@ -106,6 +108,7 @@ The default sound is GNOME's soft `hum.ogg` alert. Override it with `ALARM_SOUND
 - CopyQ config is backed up, but clipboard history is not. That is deliberate.
 - Fcitx5/Rime uses `.xinputrc` plus `config/fcitx5/profile`; log out/in after restoring input method settings.
 - `.bashrc` contains project-specific Densepose paths under `/mnt/windows/Users/densepose/...`; edit those paths on a non-dual-boot or differently named machine.
+- `bashrc-autopush.path` watches `~/.bashrc`; check recent runs with `journalctl --user -u bashrc-autopush.service`.
 - `pulsesecure` and some VPN/vendor packages may appear in the full apt manifest but are not part of the curated default install because vendor repositories change.
 - Battery charge limits often live in firmware or Windows vendor tools on dual boot machines. This repo records Ubuntu-side power settings, not firmware/Windows charge thresholds.
 

@@ -1,0 +1,8 @@
+[Unit]
+Description=Commit and push ~/.bashrc to dotfiles
+Documentation=https://github.com/chleheng/dotfiles
+
+[Service]
+Type=oneshot
+Environment=BASHRC_AUTOPUSH_DELAY=1
+ExecStart=%h/.local/bin/bashrc-push
