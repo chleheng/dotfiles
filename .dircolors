@@ -1,0 +1,165 @@
+# dircolors tuned for very warm displays.
+#
+# Redshift/Gammastep at 1700K-1000K crushes blue/cyan contrast, so this
+# palette avoids the default dark-blue directories and leans on brightness,
+# underline, and warm high-contrast colors.
+
+COLORTERM ?*
+TERM *color*
+TERM *direct*
+TERM gnome
+TERM screen*
+TERM tmux*
+TERM xterm*
+
+RESET 0
+NORMAL 00
+FILE 00
+DIR 01;38;5;220
+LINK 01;04;38;5;229
+MULTIHARDLINK 00
+FIFO 01;38;5;220;40
+SOCK 01;38;5;214
+DOOR 01;38;5;214
+BLK 01;38;5;230;48;5;94
+CHR 01;38;5;230;48;5;94
+ORPHAN 01;37;41
+MISSING 00
+SETUID 01;37;41
+SETGID 01;30;43
+CAPABILITY 01;37;41
+STICKY_OTHER_WRITABLE 01;30;43
+OTHER_WRITABLE 01;30;43
+STICKY 01;30;48;5;229
+EXEC 01;38;5;214
+
+# Archives and packages: bright coral.
+.7z 01;38;5;203
+.ace 01;38;5;203
+.alz 01;38;5;203
+.apk 01;38;5;203
+.arc 01;38;5;203
+.arj 01;38;5;203
+.bz 01;38;5;203
+.bz2 01;38;5;203
+.cab 01;38;5;203
+.deb 01;38;5;203
+.gz 01;38;5;203
+.jar 01;38;5;203
+.lha 01;38;5;203
+.lrz 01;38;5;203
+.lz 01;38;5;203
+.lz4 01;38;5;203
+.lzh 01;38;5;203
+.lzma 01;38;5;203
+.rar 01;38;5;203
+.rpm 01;38;5;203
+.rz 01;38;5;203
+.tar 01;38;5;203
+.taz 01;38;5;203
+.tbz 01;38;5;203
+.tbz2 01;38;5;203
+.tgz 01;38;5;203
+.tlz 01;38;5;203
+.txz 01;38;5;203
+.tz 01;38;5;203
+.tzo 01;38;5;203
+.tzst 01;38;5;203
+.wim 01;38;5;203
+.xz 01;38;5;203
+.z 01;38;5;203
+.zip 01;38;5;203
+.zst 01;38;5;203
+
+# Images and design assets: pale peach.
+.avif 38;5;217
+.bmp 38;5;217
+.gif 38;5;217
+.heic 38;5;217
+.ico 38;5;217
+.jpeg 38;5;217
+.jpg 38;5;217
+.png 38;5;217
+.psd 38;5;217
+.svg 38;5;217
+.svgz 38;5;217
+.tif 38;5;217
+.tiff 38;5;217
+.webp 38;5;217
+
+# Audio and video: softer amber.
+.aac 38;5;222
+.avi 38;5;222
+.flac 38;5;222
+.m4a 38;5;222
+.m4v 38;5;222
+.mkv 38;5;222
+.mov 38;5;222
+.mp3 38;5;222
+.mp4 38;5;222
+.mpeg 38;5;222
+.mpg 38;5;222
+.ogg 38;5;222
+.opus 38;5;222
+.wav 38;5;222
+.webm 38;5;222
+
+# Documents: light cream.
+.csv 38;5;223
+.doc 38;5;223
+.docx 38;5;223
+.ipynb 38;5;223
+.md 38;5;223
+.ods 38;5;223
+.odt 38;5;223
+.pdf 01;38;5;223
+.ppt 38;5;223
+.pptx 38;5;223
+.rst 38;5;223
+.tsv 38;5;223
+.txt 38;5;223
+.xls 38;5;223
+.xlsx 38;5;223
+
+# Code, configs, and data: muted warm neutrals.
+.bash 38;5;187
+.c 38;5;187
+.cc 38;5;187
+.conf 38;5;187
+.cpp 38;5;187
+.css 38;5;187
+.cu 38;5;187
+.env 38;5;187
+.h 38;5;187
+.hpp 38;5;187
+.html 38;5;187
+.ini 38;5;187
+.js 38;5;187
+.json 38;5;187
+.log 38;5;180
+.lua 38;5;187
+.m 38;5;187
+.mat 38;5;180
+.npy 38;5;180
+.npz 38;5;180
+.onnx 38;5;180
+.pth 38;5;180
+.pt 38;5;180
+.py 38;5;187
+.rs 38;5;187
+.sh 38;5;187
+.sql 38;5;187
+.toml 38;5;187
+.ts 38;5;187
+.tsx 38;5;187
+.xml 38;5;187
+.yaml 38;5;187
+.yml 38;5;187
+
+# Low-priority clutter: dim but still readable on black.
+.bak 02;38;5;246
+.old 02;38;5;246
+.orig 02;38;5;246
+.pyc 02;38;5;246
+.swp 02;38;5;246
+.tmp 02;38;5;246

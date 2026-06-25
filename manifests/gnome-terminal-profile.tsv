@@ -1,0 +1,6 @@
+default-profile	b1dcc9dd-5262-4d8d-a863-c897e6d979b9
+use-theme-colors	false
+background-color	'#11100D'
+foreground-color	'#FFF1CC'
+bold-color-same-as-fg	true
+palette	['#1A1814', '#FF6F61', '#B8D66D', '#FFD866', '#A7C7FF', '#FFB3D9', '#BEEFEA', '#F7E8C8', '#6F675A', '#FF9A8A', '#E7F08C', '#FFE899', '#D1DDFF', '#FFD0EA', '#DCF8F1', '#FFF7DE']

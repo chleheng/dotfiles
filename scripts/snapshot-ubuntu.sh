@@ -166,7 +166,27 @@ fi
   done
 } > "$manifest_dir/gnome-settings-selected.txt"
 
+if command -v gsettings >/dev/null 2>&1 && command -v dconf >/dev/null 2>&1; then
+  uuid="$(gsettings get org.gnome.Terminal.ProfilesList default 2>/dev/null | tr -d "'")"
+  base="/org/gnome/terminal/legacy/profiles:/:$uuid/"
+  {
+    printf 'default-profile\t%s\n' "$uuid"
+    for key in \
+      use-theme-colors \
+      background-color \
+      foreground-color \
+      bold-color-same-as-fg \
+      bold-color \
+      palette
+    do
+      value="$(dconf read "${base}${key}" 2>/dev/null || true)"
+      [ -n "$value" ] && printf '%s\t%s\n' "$key" "$value"
+    done
+  } > "$manifest_dir/gnome-terminal-profile.tsv"
+fi
+
 copy_file "$HOME/.bashrc" ".bashrc"
+copy_file "$HOME/.dircolors" ".dircolors"
 copy_file "$HOME/.profile" ".profile"
 copy_file "$HOME/.xinputrc" ".xinputrc"
 copy_file "$HOME/.vimrc" ".vimrc"
@@ -218,6 +238,7 @@ if command -v perl >/dev/null 2>&1; then
     -name '*.service' -o \
     -name '*.sh' -o \
     -name '.bashrc' -o \
+    -name '.dircolors' -o \
     -name '.profile' -o \
     -name '.xinputrc' -o \
     -name '.gitconfig' -o \

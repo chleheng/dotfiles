@@ -57,7 +57,7 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u@\h\[\033[00m\]:\[\033[38;5;208m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;38;5;230m\]\u@\h\[\033[00m\]:\[\033[01;04;38;5;220m\]\w\[\033[00m\]\[\033[38;5;214m\]\$ \[\033[00m\]'
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -75,7 +75,7 @@ esac
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
+    alias ls='ls --color=auto --group-directories-first'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
@@ -84,8 +84,27 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+# Warm-display terminal colors. Avoid dark blues/cyans that collapse under
+# Redshift/Gammastep at 1700K-1000K.
+export GREP_COLORS='ms=01;38;5;220:mc=01;38;5;220:fn=38;5;222:ln=38;5;180:bn=38;5;180:se=38;5;240'
+export GCC_COLORS='error=01;38;5;203:warning=01;38;5;220:note=01;38;5;223:caret=01;38;5;214:locus=38;5;180:quote=01;38;5;229'
+export LESS_TERMCAP_mb=$'\e[01;38;5;220m'
+export LESS_TERMCAP_md=$'\e[01;38;5;220m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[30;48;5;220m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[01;04;38;5;229m'
+
+warm-colors() {
+  local reset=$'\033[0m'
+  printf '%b%-12s%b %s\n' $'\033[01;38;5;220m' directory "$reset" 'bold gold'
+  printf '%b%-12s%b %s\n' $'\033[01;04;38;5;229m' symlink "$reset" 'underlined ivory'
+  printf '%b%-12s%b %s\n' $'\033[01;38;5;214m' executable "$reset" 'orange'
+  printf '%b%-12s%b %s\n' $'\033[01;38;5;203m' archive "$reset" 'coral'
+  printf '%b%-12s%b %s\n' $'\033[38;5;217m' media "$reset" 'pale peach'
+  printf '%b%-12s%b %s\n' $'\033[30;48;5;220m' selected "$reset" 'black on gold'
+}
 
 # some more ls aliases
 alias ll='ls -alF'
@@ -193,5 +212,5 @@ if [ -d "$DENSEPOSE" ]; then
   cd "$DENSEPOSE"
 fi
 export PATH="$HOME/.local/bin:$PATH"
-source ~/venvs/rpi_wifi_stream/bin/activate 
+source ~/venvs/rpi_wifi_stream/bin/activate
 source /mnt/windows/Users/densepose/Documents/densepose/rpi_wifi_stream/aliases.sh

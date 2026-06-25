@@ -25,7 +25,7 @@ The bootstrap script backs up existing files into `~/.dotfiles-backup/<timestamp
 
 ## What gets restored
 
-- Shell/editor dotfiles: `.bashrc`, `.profile`, `.xinputrc`, `.gitconfig`, `.vimrc`, `.tmux.conf`.
+- Shell/editor dotfiles: `.bashrc`, `.dircolors`, `.profile`, `.xinputrc`, `.gitconfig`, `.vimrc`, `.tmux.conf`.
 - Safe app configs: Redshift, Gammastep, CopyQ settings, Fcitx5 profile, VS Code user settings, selected autostart entries.
 - Screen zoom helper: touchpad-to-GNOME-magnifier script plus user systemd service.
 - Lightweight desktop alarm helpers: `alarm-in`, `alarm-ring`, and `alarm-stop`.
@@ -59,6 +59,7 @@ Review the diff before committing. The snapshot intentionally skips browser prof
 - `manifests/chrome-installed-web-app-urls.tsv`: Chrome-installed app URLs detected from the Chrome profile preferences.
 - `manifests/vscode-extensions.txt`: VS Code extensions.
 - `manifests/gnome-settings-selected.txt`: broad selected GNOME snapshot.
+- `manifests/gnome-terminal-profile.tsv`: the active GNOME Terminal profile color keys.
 - `manifests/gnome-settings-apply.txt`: focused GNOME settings replayed by bootstrap.
 - `config/codex/AGENTS.md`: global Codex note pointing densepose work at Claude's persisted project memory. On this machine, `~/.codex/AGENTS.md` should symlink here.
 
@@ -70,6 +71,9 @@ Redshift is deliberately treated as a manual tool:
 - `config/gammastep/config.ini`: day `1800K`, night `1100K`, manual Singapore coordinates, `wayland`.
 - `config/autostart/redshift-gtk.desktop` and `config/autostart/gammastep-indicator.desktop` are disabled/hidden.
 - `.bashrc` defines `r()`, so `r 3000` stops running Redshift/Gammastep controllers, disables GNOME Night Light, and starts a small persistent Redshift process with both day and night pinned to `3000K`; plain `r` stops controllers and resets to `6500K`.
+- `.dircolors` replaces fragile dark blue/cyan shell colors with warm, high-luminance colors. Directories are bold gold, symlinks are underlined ivory, executables are orange, archives are coral, and `ls` groups directories first for a non-color cue.
+- `.bashrc` also sets warm-safe `GREP_COLORS`, `GCC_COLORS`, and `LESS_TERMCAP_*`; run `warm-colors` in a new shell to preview the core palette.
+- GNOME Terminal's default profile is set to a warm high-contrast ANSI palette during bootstrap, so programs that emit plain ANSI blue/cyan remain visible instead of becoming near-black under heavy Redshift.
 
 This avoids the failure mode where `redshift-gtk`, Gammastep, GNOME Night Light, or a display gamma reset overwrites a one-shot `redshift -O 3000`.
 

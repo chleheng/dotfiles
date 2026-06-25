@@ -225,6 +225,7 @@ enable_user_service() {
 
 install_configs() {
   install_file "$repo_root/.bashrc" "$HOME/.bashrc"
+  install_symlink "$repo_root/.dircolors" "$HOME/.dircolors"
   install_file "$repo_root/.profile" "$HOME/.profile"
   install_file "$repo_root/.xinputrc" "$HOME/.xinputrc"
   install_file "$repo_root/.gitconfig" "$HOME/.gitconfig"
@@ -298,6 +299,25 @@ apply_gsettings() {
   done < "$file"
 }
 
+apply_gnome_terminal_palette() {
+  local uuid base palette
+
+  command -v gsettings >/dev/null 2>&1 || return 0
+  command -v dconf >/dev/null 2>&1 || return 0
+
+  uuid="$(gsettings get org.gnome.Terminal.ProfilesList default 2>/dev/null | tr -d "'")"
+  [ -n "$uuid" ] || return 0
+
+  base="/org/gnome/terminal/legacy/profiles:/:$uuid/"
+  palette="['#1A1814', '#FF6F61', '#B8D66D', '#FFD866', '#A7C7FF', '#FFB3D9', '#BEEFEA', '#F7E8C8', '#6F675A', '#FF9A8A', '#E7F08C', '#FFE899', '#D1DDFF', '#FFD0EA', '#DCF8F1', '#FFF7DE']"
+
+  run dconf write "${base}use-theme-colors" false
+  run dconf write "${base}background-color" "'#11100D'"
+  run dconf write "${base}foreground-color" "'#FFF1CC'"
+  run dconf write "${base}bold-color-same-as-fg" true
+  run dconf write "${base}palette" "$palette"
+}
+
 if ! $skip_packages; then
   install_google_chrome
   install_vscode
@@ -323,6 +343,7 @@ fi
 
 if ! $skip_gnome; then
   apply_gsettings
+  apply_gnome_terminal_palette
 fi
 
 printf 'Done. Backups, if any, are in %s\n' "$backup_root"
