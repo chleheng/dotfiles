@@ -207,6 +207,10 @@ r() {
   pid=$!
   disown "$pid" 2>/dev/null || true
 }
+rauto() {
+  systemctl --user import-environment DISPLAY XAUTHORITY XDG_SESSION_TYPE DESKTOP_SESSION XDG_CURRENT_DESKTOP WAYLAND_DISPLAY DBUS_SESSION_BUS_ADDRESS 2>/dev/null || true
+  systemctl --user enable --now redshift.service
+}
 open() {
   command xdg-open "$@"
 }
