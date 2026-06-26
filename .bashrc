@@ -207,7 +207,9 @@ r() {
   pid=$!
   disown "$pid" 2>/dev/null || true
 }
-alias open='xdg-open'
+open() {
+  command xdg-open "$@"
+}
 if [ -d "$DENSEPOSE" ]; then
   cd "$DENSEPOSE"
 fi
