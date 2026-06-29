@@ -258,7 +258,7 @@ install_configs() {
         install_file "$file" "$HOME/.local/share/applications/$(basename "$file")"
       done
 
-  install_file "$repo_root/bin/claude-backup" "$HOME/bin/claude-backup" 0755
+  install_file "$repo_root/bin/ai-backup" "$HOME/bin/ai-backup" 0755
   install_file "$repo_root/bin/alarm-in" "$HOME/.local/bin/alarm-in" 0755
   install_file "$repo_root/bin/alarm-ring" "$HOME/.local/bin/alarm-ring" 0755
   install_file "$repo_root/bin/alarm-stop" "$HOME/.local/bin/alarm-stop" 0755

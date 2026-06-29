@@ -24,7 +24,7 @@ Development and AI:
 - VS Code with Python, Jupyter, Java, Remote SSH/WSL, Scheme/Racket, Claude Code, ChatGPT, and Copilot-related extensions.
 - Git, GitHub CLI, npm, Python venv/pip, Vim, tmux.
 - Global npm package: `@anthropic-ai/claude-code`.
-- Helper scripts: `bin/claude-backup`, `bin/claude-done-notify.sh`.
+- Helper scripts: `bin/ai-backup`, `bin/claude-done-notify.sh`.
 - Screen zoom helper: `bin/touchpad-screen-zoom`, mapping touchpad pinch gestures to GNOME screen magnifier shortcuts.
 
 Desktop utilities:
@@ -110,7 +110,7 @@ Config files:
 
 Local executable scripts:
 
-- `bin/claude-backup`
+- `bin/ai-backup`
 - `bin/claude-done-notify.sh`
 - `bin/touchpad-screen-zoom`
 

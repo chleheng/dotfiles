@@ -1,0 +1,143 @@
+#!/usr/bin/env bash
+# End-of-day AI backup: refresh Claude + Codex state, commit, and push.
+set -Eeuo pipefail
+
+CLAUDE_DIR="${CLAUDE_DIR:-/home/q1/.claude}"
+CODEX_DIR="${CODEX_DIR:-/home/q1/.codex}"
+CODEX_SNAPSHOT="$CLAUDE_DIR/codex"
+CODEX_SQLITE_SNAPSHOT="$CODEX_SNAPSHOT/sqlite"
+REMOTE_URL="https://github.com/chleheng/ai-backup"
+
+require_tool() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    printf 'Missing required tool: %s\n' "$1" >&2
+    exit 1
+  fi
+}
+
+copy_file_if_present() {
+  local src="$1"
+  local dst="$2"
+
+  if [ -f "$src" ]; then
+    install -D -m 0644 "$src" "$dst"
+  else
+    rm -f "$dst"
+  fi
+}
+
+sync_tree_if_present() {
+  local src="$1"
+  local dst="$2"
+  shift 2
+
+  if [ -d "$src" ]; then
+    mkdir -p "$dst"
+    rsync -a --delete "$@" "$src"/ "$dst"/
+  else
+    rm -rf "$dst"
+  fi
+}
+
+backup_sqlite() {
+  local name="$1"
+  local src="$CODEX_DIR/$name"
+  local dst="$CODEX_SQLITE_SNAPSHOT/$name"
+
+  if [ -f "$src" ]; then
+    rm -f "$dst.tmp"
+    sqlite3 "$src" ".backup '$dst.tmp'"
+    mv -f "$dst.tmp" "$dst"
+  else
+    rm -f "$dst" "$dst.zst"
+  fi
+}
+
+write_codex_readme() {
+  cat > "$CODEX_SNAPSHOT/README.md" <<'README'
+# Codex Backup
+
+This directory is a snapshot of selected `~/.codex` state kept in the
+`ai-backup` repository alongside `~/.claude`.
+
+Included:
+
+- `sessions/`, `history.jsonl`, and `session_index.jsonl*`
+- `attachments/`
+- SQLite backups for goals, logs, memories, and state
+- `config.toml`, `rules/`, `tools/`, custom `skills/`, `models_cache.json`, and `version.json`
+
+Skipped on purpose:
+
+- `auth.json`, `installation_id`, and login logs
+- caches, temp directories, plugin caches, generated system skills, and shell snapshots
+- `AGENTS.md`, because it is symlinked from dotfiles
+
+`sqlite/logs_2.sqlite.zst` is compressed to stay below GitHub's normal file
+size limit. Restore with:
+
+```bash
+zstd -d sqlite/logs_2.sqlite.zst -o logs_2.sqlite
+```
+README
+}
+
+sync_codex_snapshot() {
+  [ -d "$CODEX_DIR" ] || return 0
+
+  mkdir -p "$CODEX_SNAPSHOT" "$CODEX_SQLITE_SNAPSHOT"
+
+  copy_file_if_present "$CODEX_DIR/config.toml" "$CODEX_SNAPSHOT/config.toml"
+  copy_file_if_present "$CODEX_DIR/history.jsonl" "$CODEX_SNAPSHOT/history.jsonl"
+  copy_file_if_present "$CODEX_DIR/models_cache.json" "$CODEX_SNAPSHOT/models_cache.json"
+  copy_file_if_present "$CODEX_DIR/version.json" "$CODEX_SNAPSHOT/version.json"
+  copy_file_if_present "$CODEX_DIR/.personality_migration" "$CODEX_SNAPSHOT/.personality_migration"
+
+  find "$CODEX_SNAPSHOT" -maxdepth 1 -type f -name 'session_index.jsonl*' -delete
+  shopt -s nullglob
+  for file in "$CODEX_DIR"/session_index.jsonl*; do
+    install -D -m 0644 "$file" "$CODEX_SNAPSHOT/$(basename "$file")"
+  done
+  shopt -u nullglob
+
+  sync_tree_if_present "$CODEX_DIR/sessions" "$CODEX_SNAPSHOT/sessions"
+  sync_tree_if_present "$CODEX_DIR/attachments" "$CODEX_SNAPSHOT/attachments"
+  sync_tree_if_present "$CODEX_DIR/rules" "$CODEX_SNAPSHOT/rules"
+  sync_tree_if_present "$CODEX_DIR/tools" "$CODEX_SNAPSHOT/tools" --delete-excluded --exclude '__pycache__/' --exclude '*.pyc'
+  sync_tree_if_present "$CODEX_DIR/skills" "$CODEX_SNAPSHOT/skills" --delete-excluded --exclude '.system/' --exclude '__pycache__/' --exclude '*.pyc'
+
+  backup_sqlite logs_2.sqlite
+  if [ -f "$CODEX_SQLITE_SNAPSHOT/logs_2.sqlite" ]; then
+    zstd -q -f "$CODEX_SQLITE_SNAPSHOT/logs_2.sqlite" -o "$CODEX_SQLITE_SNAPSHOT/logs_2.sqlite.zst"
+    rm -f "$CODEX_SQLITE_SNAPSHOT/logs_2.sqlite"
+  fi
+  backup_sqlite goals_1.sqlite
+  backup_sqlite memories_1.sqlite
+  backup_sqlite state_5.sqlite
+
+  write_codex_readme
+}
+
+require_tool git
+require_tool rsync
+require_tool sqlite3
+require_tool zstd
+
+sync_codex_snapshot
+
+cd "$CLAUDE_DIR"
+
+if git remote get-url origin >/dev/null 2>&1; then
+  git remote set-url origin "$REMOTE_URL.git"
+fi
+
+if git diff --quiet && git diff --cached --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+  echo "Nothing changed since last backup."
+  exit 0
+fi
+
+DATE=$(date '+%Y-%m-%d %H:%M')
+git add -A
+git commit -m "AI backup $DATE"
+git push
+echo "Backed up to $REMOTE_URL"

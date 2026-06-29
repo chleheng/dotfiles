@@ -217,7 +217,7 @@ find "$HOME/.local/share/applications" -maxdepth 1 -type f -name 'chrome-*-Defau
       copy_file "$file" "config/chrome-web-apps/$(basename "$file")"
     done
 
-copy_executable "$HOME/bin/claude-backup" "bin/claude-backup"
+copy_executable "$HOME/bin/ai-backup" "bin/ai-backup"
 copy_executable "$HOME/.local/bin/alarm-in" "bin/alarm-in"
 copy_executable "$HOME/.local/bin/alarm-ring" "bin/alarm-ring"
 copy_executable "$HOME/.local/bin/alarm-stop" "bin/alarm-stop"
